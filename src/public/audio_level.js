@@ -6,7 +6,7 @@ function read_vars() {
 
   console.log(gps_block);
   window.location = `http://localhost:3000/api/audio?id=hej&token=DenErFin&level=${
-    average(rsm_block),
+    average(rsm_block)
   }`;
   rsm_block = [];
   gps_block = [];
