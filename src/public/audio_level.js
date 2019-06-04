@@ -2,19 +2,25 @@ var rsm_block = [];
 var gps_block = [];
 
 function read_vars() {
-  // Do stuff like calculate mean values or so..
-  console.log(rsm_block, gps_block);
+
+  let average = (array) => array.reduce((a, b) => a + b) / array.length;
+
+  console.log(average([rsm_block]).toString());
+
+  console.log(gps_block);
+
+  rsm_block = [];
+  gps_block = [];
 };
 
 
 async function timer() {
 
   console.log('started to read variables');
+  
+  setInterval(() => { read_vars(); }, 5000);
 
-  setTimeout(() => { read_vars(); }, 5000);
 
-  console.log(result);
-  // expected output: 'resolved'
 };
 
 // get list af media devices
@@ -64,8 +70,8 @@ navigator.mediaDevices
 
       var rms = Math.sqrt(total / inputDataLength) * 100;
       document.getElementById("audio_level").innerHTML = rms.toString();
-      console.log(rms);
-      rsm_block.push(rsm)
+      // console.log(rms);
+      rsm_block.push(rms)
     };
 
     //   audio.onloadedmetadata = function(e) {
@@ -101,3 +107,4 @@ options = {
 };
 
 id = navigator.geolocation.watchPosition(success, error, options);
+timer()
