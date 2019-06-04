@@ -1,0 +1,28 @@
+{
+  "name": "audiomapping",
+  "version": "1.0.0",
+  "description": "Audio mapping - geolocated sound",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Roaringman/audioMapping.git"
+  },
+  "keywords": [
+    "Geo",
+    "viz",
+    "audio",
+    "API"
+  ],
+  "author": "Roar og Magnus",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Roaringman/audioMapping/issues"
+  },
+  "homepage": "https://github.com/Roaringman/audioMapping#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
