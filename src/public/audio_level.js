@@ -89,7 +89,7 @@ function success(pos) {
   var crd = pos.coords;
 
   document.getElementById("position").innerHTML =
-    crd.latitude.toString() + " ," + crd.longitude.toString();
+    crd.latitude.toString() + "," + crd.longitude.toString();
   document.getElementById("accuracy").innerHTML = crd.accuracy.toString();
   document.getElementById("timestamp").innerHTML = pos.timestamp.toString();
 
