@@ -20,33 +20,11 @@ async function timer() {
   }, 5000);
 }
 
-// get list af media devices
-
-if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
-  console.log("enumerateDevices() not supported.");
-  // return;
-}
-
-// List cameras and microphones.
-
-navigator.mediaDevices
-  .enumerateDevices()
-  .then(function(devices) {
-    devices.forEach(function(device) {
-      console.log(
-        device.kind + ": " + device.label + " id = " + device.deviceId
-      );
-    });
-  })
-  .catch(function(err) {
-    console.log(err.name + ": " + err.message);
-  });
-
 // start recording
+// https://gist.github.com/yying/754313510c62ca07230c
 
 var constraints = { audio: true, video: false };
 
-// https://gist.github.com/yying/754313510c62ca07230c
 
 navigator.mediaDevices
   .getUserMedia(constraints)
