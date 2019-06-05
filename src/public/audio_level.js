@@ -8,7 +8,7 @@ function read_vars() {
   console.log(gps_block);
   window.location = `http://localhost:3000/api/time/${frontnow}/level/${average(
     rsm_block
-  )}/positionLat/${gps_block.latitude}/positionLon/${gps_block.latitude}`;
+  )}/positionLat/${gps_block.latitude}/positionLon/${gps_block.longitude}`;
   rsm_block = [];
 }
 
