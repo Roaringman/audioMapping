@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "audiolocator",
+  "private_key_id": "9b5ba4b4a4bfeaa8934c9926b299807387a91d07",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC7uLIlVxJd2GXB\n8QvoJiSfLrxANpgj2gBJDNbp7FvLr6RQIo9DPhRtBOtrSgsgVUpqcgk3AVWLKD6H\nTbW1aj7c07CfzHGsLtqup1jNZm0rWmVmensySSwe0jl+IxxwzpFwcKYMvXCRYxPP\n5CR0+PolVXo44LHQ05V15U3MBWrK6UodRCR/ReBMnQ/RYm1UNbCI+jaeMGHJjCBc\nh50FNydQqRD0UhOESZUSyfJmwC91Meexvy3Q2F6VL8sPRxz7tyuJUh0m3SBS8hCl\nPqeimjKP7+bok06vQoo1Us4qyyvHz/VovBwvOgAtitembHOe22dUS8FcGFef5J1V\nrz26fi4HAgMBAAECggEASDsECQwc3BFE7kASxcvPcZSpCMg4+CqMy47uLuosVA6M\nWe1CVKxRbbVj5E+EQneu/5BLbWfNA5ODo8pJ7bko4Q1vO72Ny6PnryZjK/2KahEJ\nTUo5lxrCqEVZq+hUrC8/lRUzP1mxM6/80pRFVuDqV20xbys+IE0ZiFin+6Xl9pbu\nIWWMBvlL+IKu/Sg5xmuw7ievR38pBiYS6kLYF6uFha+dcAa+gS3/taSuTg+TwQEd\nu1X+YeVZnAXaRrMT/yJqQqoPsRp5TiYZ6phfQ4TStRh/rMqN3cvnzLUmhQ4T9w3J\niUOKaK5onQFFYa+JKrhS32TaHzPa5lQoXAuSp2nQkQKBgQDs3T1iSZHqG+8/tgUD\nK7YtMro9FKWwjyMuwl53TiElFFNZsklg5y4m0p48M2gM7h4jnInuzAWBngR7vPKt\nC136qiMPHFKRNapAVMobGu86k33tgCGeejgE8TOe7y9MTyKfrvlrKjD6OBHSTLDo\nkieRcHZ4+DoZCiiki03MaWPEvwKBgQDK4xlvDOjQHMZN6R79z41/rw1kx6gbbxt7\n+Aw7LmJ4g128DaNll5bt7zxpft2Ftz0yzgkzNAMpIZwIhuSGqBfhPVlyC7Jmqbev\n0jlN0qiuplW5UPNH0m2Tmr+SX8Dv77h3KlgXA2xGdbEyjqpTurswiftL3Is2EMt3\nfn76PtsAuQKBgFX9O3ujGcXTvldyzP8Jr2lZMSNbi4s9a5heF81YH9BGQLwfbWQw\niSCu9aMFRpDrISXsfmaiypzzsMz7G16W8dc+TNv/fDobMWOJZJXSgWbShLTj/1B5\nLj0dE5BvZMxfLkKqUwIEnyM3l8Cw9sh3xsWV/myMMQtGFNsnd2buG7ohAoGAP9wD\nYWTa0sZ71IIP8yulCg97U8FUNG5gZEDK+MW80NnoYwyX5Z41L2chyMLZzwDCDn+z\nfZ5dcFDX4Ac1Xv0Bpy+8O51a5d19p6Wvy8MGvRI14UKNkIm3W8JVkij5fYwir79w\nQq4dIoBg6dzl17zqtnh31ITyfG4E3PO/29x06mECgYEA2ykvzoknY0fjiwo6KdWU\npPufWjHBiSWHxotbWRMcgMu21xZq6m1JV16alU1OfxtjVuQ3wxOvqz5njjUGxu1x\nv25PPtsV7lEIQapWwmE/Cjz59kc2lcNIpYddHrXt+dX2QcPi+TlzCQ5pV44MX3FH\nyIXlaIyOIk35yDz5wImz0VI=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-tkm5v@audiolocator.iam.gserviceaccount.com",
+  "client_id": "114256076370390616717",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-tkm5v%40audiolocator.iam.gserviceaccount.com"
+}

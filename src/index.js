@@ -1,9 +1,11 @@
+const DBimport = require("./FireDB.js");
 const express = require("express");
 const path = require("path");
 const reload = require("reload");
 
 const app = express();
 const port = 3000;
+const db = DBimport.firestore;
 
 app.use(express.static(__dirname + "/public"));
 
@@ -12,12 +14,25 @@ app.get("/", (req, res) => {
 });
 
 // routes will go here
-app.get("/api/audio", function(req, res) {
-  var user_id = req.param("id");
-  var token = req.param("token");
-  var level = req.param("level");
-  console.log(user_id, token, Object.keys(level));
-});
+app.get(
+  "/api/time/:timeStamp/level/:levelVal/positionLat/:Lat/positionLon/:Lon",
+  function(req, res) {
+    const { timeStamp, levelVal, Lat, Lon } = req.params;
+    const d = new Date();
+    const serverNow = Math.round(d.getTime() / 1000);
+    db.collection("audioPos")
+      .add({
+        clintTime: timeStamp,
+        serverTime: serverNow - timeStamp,
+        level: levelVal,
+        Lat,
+        Lon,
+      })
+      .then(ref => {
+        console.log("Added document with ID: ", ref.id);
+      });
+  }
+);
 
 app.get("/api/position", function(req, res) {
   var user_id = req.param("id");

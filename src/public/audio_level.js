@@ -1,15 +1,15 @@
 var rsm_block = [];
-var gps_block = [];
+var gps_block;
 
 function read_vars() {
   let average = array => array.reduce((a, b) => a + b) / array.length;
-
+  var d = new Date();
+  var frontnow = Math.round(d.getTime() / 1000);
   console.log(gps_block);
-  window.location = `http://localhost:3000/api/audio?id=hej&token=DenErFin&level=${
-    average(rsm_block)
-  }`;
+  window.location = `http://localhost:3000/api/time/${frontnow}/level/${average(
+    rsm_block
+  )}/positionLat/${gps_block.latitude}/positionLon/${gps_block.latitude}`;
   rsm_block = [];
-  gps_block = [];
 }
 
 async function timer() {
@@ -24,7 +24,6 @@ async function timer() {
 // https://gist.github.com/yying/754313510c62ca07230c
 
 var constraints = { audio: true, video: false };
-
 
 navigator.mediaDevices
   .getUserMedia(constraints)
@@ -68,7 +67,7 @@ function success(pos) {
   document.getElementById("accuracy").innerHTML = crd.accuracy.toString();
   document.getElementById("timestamp").innerHTML = pos.timestamp.toString();
 
-  gps_block.push(crd);
+  gps_block = crd;
 }
 
 function error(err) {

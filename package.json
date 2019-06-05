@@ -24,9 +24,11 @@
   },
   "homepage": "https://github.com/Roaringman/audioMapping#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "firebase": "^6.1.0"
   },
   "devDependencies": {
+    "babel-core": "^6.26.3",
     "nodemon": "^1.19.1",
     "reload": "^3.0.1"
   }
