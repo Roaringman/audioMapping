@@ -4,16 +4,41 @@ var audio_level = document.getElementById("audio_level");
 var position = document.getElementById("position");
 var accuracy = document.getElementById("accuracy");
 var timestamp = document.getElementById("timestamp");
+var responsesStatus = document.getElementById("responseStatus");
+
 
 function read_vars() {
   let average = array => array.reduce((a, b) => a + b) / array.length;
   var d = new Date();
   var frontnow = Math.round(d.getTime() / 1000);
-  console.log(average(rsm_block));
+  /*console.log(average(rsm_block));
   window.location = `http://localhost:3000/api/time/${frontnow}/level/${average(
     rsm_block
   )}/positionLat/${gps_block.latitude}/positionLon/${gps_block.longitude}`;
-  rsm_block = [];
+  rsm_block = [];*/
+
+    const level = average(rsm_block);
+    const lat = gps_block.latitude;
+    const lon = gps_block.longitude;
+    const timeStamp = frontnow;
+
+
+    const data = { level, lat, lon, timeStamp};
+    
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    };
+    fetch('/api', options).then(response => {
+      if(response.status === 200){
+        responsesStatus.innerHTML = "Successfully sent data"
+      } else {
+        responsesStatus.innerHTML = "Could not send data to server!"
+      }
+    });
 };
 
 // start recording
