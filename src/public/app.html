@@ -4,6 +4,13 @@
     <head>
       <meta charset="utf-8" />
       <title>Audio level v0.1</title>
+      
+      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+   integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+   crossorigin=""/>
+   <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+   integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+   crossorigin=""></script>
     </head>
 
     <body>
@@ -18,9 +25,21 @@
       <h2>timestamp</h2>
       <p id="timestamp">No readings</p>
 
+      <label for="timeToReload">Set time to next data load: </label>
+      <div class="slidecontainer">
+        <section>
+            <input type="range" min="1" max="10" value="10" class="slider" id="timeToReload" onchange="updateSlider(this.value)">
+            <figcaption> Reloading map data in: <span id="reloadTimer"></span></figcaption>
+        </section> 
+        <button  onClick="loadData()">Load Data</button> 
+      </div>
+
+      <p></p>
+      <div id="mapid" style="height: 460px; width:460px;"></div>
 
       <audio>audio</audio>
     </body>
     <script src="audio_level.js"></script>
+ 
   </html>
 </html>

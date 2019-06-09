@@ -19,13 +19,15 @@ app.post('/api', (request, response) => {
   const d = new Date();
   const serverNow = Math.round(d.getTime() / 1000);
 
+  const { timeStamp, level, lat, lon } = data;
+
   db.collection("audioPos")
       .add({
-        clintTime: data.timeStamp,
-        serverTime: serverNow - data.timeStamp,
-        level: data.level,
-        Lat: data.lat,
-        Lon: data.lon,
+        clintTime: timeStamp,
+        serverTime: serverNow - timeStamp,
+        level: level,
+        Lat: lat,
+        Lon: lon,
       })
       .then(ref => {
         console.log("Added document with ID: ", ref.id);
@@ -34,6 +36,25 @@ app.post('/api', (request, response) => {
     response.json = {status: "Success"};
     response.end();
 });
+
+app.get('/api/read', (request, response) => {
+
+  const responseData=[];
+
+  db.collection("audioPos").where("level", ">=", 1)
+      .get()
+      .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+            responseData.push(doc.data());
+          }
+          );
+          response.json( responseData);
+      })
+      .catch(function(error) {
+          console.log("Error getting documents: ", error);
+      });
+
+})
 
 reload(app)
   .then(() => {

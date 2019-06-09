@@ -5,7 +5,63 @@ var position = document.getElementById("position");
 var accuracy = document.getElementById("accuracy");
 var timestamp = document.getElementById("timestamp");
 var responsesStatus = document.getElementById("responseStatus");
+var reloadTimer = document.getElementById("reloadTimer");
+let sliderTime = document.getElementById("timeToReload").value;
 
+var mymap = L.map('mapid').setView([55.69, 12.50], 11);
+
+L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 15,
+    id: 'mapbox.streets',
+    accessToken: 'pk.eyJ1IjoicmdlbmdlbGwiLCJhIjoiY2p3b3c1M21rMGtjMzQzcTk3ZnU0MGxlMyJ9.1ZMDlrrQn98G5QgQVObfRg'
+}).addTo(mymap);
+
+async function getData(){
+  const response = await fetch('/api/read')
+  const data = await response.json(); 
+  
+  console.log(data)
+  data.map(point => {
+    L.circle([point.Lat, point.Lon], {
+      color: 'red',
+      fillColor: '#f03',
+      fillOpacity: 0.5,
+      radius: point.level * 50
+  }).addTo(mymap);
+  }
+  )
+}
+
+
+let time = sliderTime * 60;
+
+getData();
+
+function loadData(){
+  resetTimer(document.getElementById("timeToReload").value);
+  getData();
+}
+
+function updateSlider(slideAmount){
+    resetTimer(slideAmount);
+}
+
+let timer = setInterval(tick, 1000);
+
+function resetTimer(sliderTime) {
+  time = sliderTime * 60;
+};
+ 
+function tick() {
+    time--;
+    if (time <= 0) {
+        clearInterval(timer);
+        getData();
+        resetTimer(document.getElementById("timeToReload").value);
+    }
+    reloadTimer.innerHTML = `${Math.floor(time / 60)}:${('0' + time % 60).slice(-2)}`.toString();
+}
 
 function read_vars() {
   let average = array => array.reduce((a, b) => a + b) / array.length;
