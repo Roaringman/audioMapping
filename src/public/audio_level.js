@@ -18,7 +18,7 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
 }).addTo(mymap);
 
 async function getData(){
-  const response = await fetch('/api/read')
+  const response = await fetch('https://lydsans.com:3000/api/read')
   const data = await response.json(); 
   
   console.log(data)
@@ -67,11 +67,6 @@ function read_vars() {
   let average = array => array.reduce((a, b) => a + b) / array.length;
   var d = new Date();
   var frontnow = Math.round(d.getTime() / 1000);
-  /*console.log(average(rsm_block));
-  window.location = `http://localhost:3000/api/time/${frontnow}/level/${average(
-    rsm_block
-  )}/positionLat/${gps_block.latitude}/positionLon/${gps_block.longitude}`;
-  rsm_block = [];*/
 
     const level = average(rsm_block);
     const lat = gps_block.latitude;
@@ -88,7 +83,7 @@ function read_vars() {
       },
       body: JSON.stringify(data)
     };
-    fetch('/api', options).then(response => {
+    fetch('https://lydsans.com:3000/api', options).then(response => {
       if(response.status === 200){
         responsesStatus.innerHTML = "Successfully sent data"
       } else {
@@ -121,14 +116,9 @@ navigator.mediaDevices
 
       var rms = Math.sqrt(total / inputDataLength) * 100;
       audio_level.innerHTML = rms.toString();
-      // document.getElementById("audio_level").innerHTML = rms.toString();
-      // console.log(rms);
       rsm_block.push(rms);
     };
 
-    //   audio.onloadedmetadata = function(e) {
-    //     audio.play();
-    //   };
   })
   .catch(function (err) {
     console.log(err.name + ": " + err.message);
