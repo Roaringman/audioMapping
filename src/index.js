@@ -93,7 +93,7 @@ if (process.env.LOCALHOST == "true") {
     cert: fs.readFileSync('/etc/letsencrypt/live/lydsans.com/fullchain.pem')
   }, app)
     .listen(port, function () {
-      console.log('app running and listening on port 3000! Go to https://lydsans.com')
+      console.log('app running and listening on port 3000! Go to https://lydsans.com:3000')
     });
 }
 
