@@ -1,9 +1,18 @@
+var dotenv = require('dotenv').config()
 const DBimport = require("./FireDB.js");
 const express = require("express");
 const path = require("path");
-// const reload = require("reload");
+const reload = require("reload");
 const https = require('https')
 var fs = require('fs')
+
+// const result = dotenv.config()
+
+if (dotenv.error) {
+  throw dotenv.error
+}
+
+console.log(dotenv.parsed)
 
 
 const app = express();
@@ -64,24 +73,30 @@ app.get('/api/read', (request, response) => {
 
 })
 
-// reload(app)
-//   .then(() => {
-//     // reloadReturned is documented in the returns API in the README
-//     app.listen(port, () =>
-//       console.log(`Example app listening on port ${port}!`)
-//     );
-//   })
-//   .catch(function (err) {
-//     console.error(
-//       "Reload could not start, could not start server/sample app",
-//       err
-//     );
-//   });
-
-https.createServer({
-  key: fs.readFileSync('/etc/letsencrypt/live/lydsans.com/privkey.pem'),
-  cert: fs.readFileSync('/etc/letsencrypt/live/lydsans.com/fullchain.pem')
-}, app)
-  .listen(port, function () {
-    console.log('app running and listening on port 3000! Go to https://lydsans.com')
+// use reload on local machine and https on production environment
+console.log(process.env.LOCALHOST)
+if (process.env.LOCALHOST == "true") {
+  reload(app)
+  .then(() => {
+    // reloadReturned is documented in the returns API in the README
+    app.listen(port, () =>
+      console.log(`Example app listening on port ${port}!`)
+    );
+  })
+  .catch(function (err) {
+    console.error(
+      "Reload could not start, could not start server/sample app",
+      err
+    );
   });
+} else {
+  https.createServer({
+    key: fs.readFileSync('/etc/letsencrypt/live/lydsans.com/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/lydsans.com/fullchain.pem')
+  }, app)
+    .listen(port, function () {
+      console.log('app running and listening on port 3000! Go to https://lydsans.com')
+    });
+}
+
+

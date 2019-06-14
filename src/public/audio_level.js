@@ -18,7 +18,7 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
 }).addTo(mymap);
 
 async function getData(){
-  const response = await fetch('https://lydsans.com:3000/api/read')
+  const response = await fetch(environment.env.NODE_HOST +'/api/read')
   const data = await response.json(); 
   
   console.log(data)
