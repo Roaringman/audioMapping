@@ -6,8 +6,6 @@ const reload = require("reload");
 const https = require('https')
 var fs = require('fs')
 
-// const result = dotenv.config()
-
 if (dotenv.error) {
   throw dotenv.error
 }
