@@ -18,7 +18,7 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
 }).addTo(mymap);
 
 async function getData(){
-  const response = await fetch(environment.env.NODE_HOST +'/api/read')
+  const response = await fetch(process.env.NODE_HOST +'/api/read')
   const data = await response.json(); 
   
   console.log(data)
@@ -83,7 +83,7 @@ function read_vars() {
       },
       body: JSON.stringify(data)
     };
-    fetch('https://lydsans.com:3000/api', options).then(response => {
+    fetch(process.env.NODE_HOST + '/api', options).then(response => {
       if(response.status === 200){
         responsesStatus.innerHTML = "Successfully sent data"
       } else {
