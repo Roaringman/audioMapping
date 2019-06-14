@@ -62,7 +62,5 @@ node_modules/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
 .vscode/launch.json
-.gitignore
-.gitignore
+.env
