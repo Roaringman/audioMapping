@@ -39,7 +39,7 @@ let time = sliderTime * 60;
 getData();
 
 function loadData(){
-  resetTimer(document.getElementById("timeToReload").value);
+  resetTimer(sliderTime);
   getData();
 }
 
@@ -58,7 +58,7 @@ function tick() {
     if (time <= 0) {
         clearInterval(timer);
         getData();
-        resetTimer(document.getElementById("timeToReload").value);
+        resetTimer(sliderTime);
     }
     reloadTimer.innerHTML = `${Math.floor(time / 60)}:${('0' + time % 60).slice(-2)}`.toString();
 }
