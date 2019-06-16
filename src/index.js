@@ -10,9 +10,6 @@ if (dotenv.error) {
   throw dotenv.error
 }
 
-console.log(dotenv.parsed)
-
-
 const app = express();
 const port = 3000;
 const db = DBimport.firestore;
@@ -72,21 +69,21 @@ app.get('/api/read', (request, response) => {
 })
 
 // use reload on local machine and https on production environment
-console.log(process.env.LOCALHOST)
+
 if (process.env.LOCALHOST == "true") {
   reload(app)
-  .then(() => {
-    // reloadReturned is documented in the returns API in the README
-    app.listen(port, () =>
-      console.log(`Example app listening on port ${port}!`)
-    );
-  })
-  .catch(function (err) {
-    console.error(
-      "Reload could not start, could not start server/sample app",
-      err
-    );
-  });
+    .then(() => {
+      // reloadReturned is documented in the returns API in the README
+      app.listen(port, () =>
+        console.log(`Example app listening on port ${port}!`)
+      );
+    })
+    .catch(function (err) {
+      console.error(
+        "Reload could not start, could not start server/sample app",
+        err
+      );
+    });
 } else {
   https.createServer({
     key: fs.readFileSync('/etc/letsencrypt/live/lydsans.com/privkey.pem'),
