@@ -97,32 +97,66 @@ function read_vars() {
 
 var constraints = { audio: true, video: false };
 
-navigator.mediaDevices
-  .getUserMedia(constraints)
-  .then(function (mediaStream) {
-    var audioContext = new AudioContext();
-    var mediaStreamSource = audioContext.createMediaStreamSource(mediaStream);
-    var processor = audioContext.createScriptProcessor(2048, 1, 1);
-    mediaStreamSource.connect(audioContext.destination);
-    mediaStreamSource.connect(processor);
-    processor.connect(audioContext.destination);
-    processor.onaudioprocess = function (e) {
-      var inputData = e.inputBuffer.getChannelData(0);
-      var inputDataLength = inputData.length;
-      var total = 0;
-      for (var i = 0; i < inputDataLength; i++) {
-        total += Math.abs(inputData[i++]);
-      }
+// navigator.mediaDevices
+//   .getUserMedia(constraints)
+//   .then(function (mediaStream) {
+//     var audioContext = new AudioContext();
+//     var mediaStreamSource = audioContext.createMediaStreamSource(mediaStream);
+//     var processor = audioContext.createScriptProcessor(2048, 1, 1);
+//     mediaStreamSource.connect(audioContext.destination);
+//     mediaStreamSource.connect(processor);
+//     processor.connect(audioContext.destination);
+//     processor.onaudioprocess = function (e) {
+//       var inputData = e.inputBuffer.getChannelData(0);
+//       var inputDataLength = inputData.length;
+//       var total = 0;
+//       for (var i = 0; i < inputDataLength; i++) {
+//         total += Math.abs(inputData[i++]);
+//       }
 
-      var rms = Math.sqrt(total / inputDataLength) * 100;
-      audio_level.innerHTML = rms.toString();
-      rsm_block.push(rms);
-    };
+//       var rms = Math.sqrt(total / inputDataLength) * 100;
+//       audio_level.innerHTML = rms.toString();
+//       rsm_block.push(rms);
+//     };
 
-  })
-  .catch(function (err) {
-    console.log(err.name + ": " + err.message);
-  }); // always check for errors at the end.
+//   })
+//   .catch(function (err) {
+//     console.log(err.name + ": " + err.message);
+//   }); // always check for errors at the end.
+
+// https://stackoverflow.com/a/52952907
+navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+  .then(function(stream) {
+    audioContext = new AudioContext();
+    analyser = audioContext.createAnalyser();
+    microphone = audioContext.createMediaStreamSource(stream);
+    javascriptNode = audioContext.createScriptProcessor(2048, 1, 1);
+  
+    analyser.smoothingTimeConstant = 0.8;
+    analyser.fftSize = 1024;
+  
+    microphone.connect(analyser);
+    analyser.connect(javascriptNode);
+    javascriptNode.connect(audioContext.destination);
+    javascriptNode.onaudioprocess = function() {
+        var array = new Uint8Array(analyser.frequencyBinCount);
+        analyser.getByteFrequencyData(array);
+        var values = 0;
+  
+        var length = array.length;
+        for (var i = 0; i < length; i++) {
+          values += (array[i]);
+        }
+  
+        var average = values / length;
+  
+      //console.log(Math.round(average));
+      audio_level.innerHTML = Math.round(average).toString();
+    }
+    })
+    .catch(function(err) {
+      console.log(err.name + ": " + err.message);
+  });
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/watchPosition
 var id, options;
