@@ -92,40 +92,8 @@ function read_vars() {
     });
 };
 
-// start recording
-// https://gist.github.com/yying/754313510c62ca07230c
-
-var constraints = { audio: true, video: false };
-
-// navigator.mediaDevices
-//   .getUserMedia(constraints)
-//   .then(function (mediaStream) {
-//     var audioContext = new AudioContext();
-//     var mediaStreamSource = audioContext.createMediaStreamSource(mediaStream);
-//     var processor = audioContext.createScriptProcessor(2048, 1, 1);
-//     mediaStreamSource.connect(audioContext.destination);
-//     mediaStreamSource.connect(processor);
-//     processor.connect(audioContext.destination);
-//     processor.onaudioprocess = function (e) {
-//       var inputData = e.inputBuffer.getChannelData(0);
-//       var inputDataLength = inputData.length;
-//       var total = 0;
-//       for (var i = 0; i < inputDataLength; i++) {
-//         total += Math.abs(inputData[i++]);
-//       }
-
-//       var rms = Math.sqrt(total / inputDataLength) * 100;
-//       audio_level.innerHTML = rms.toString();
-//       rsm_block.push(rms);
-//     };
-
-//   })
-//   .catch(function (err) {
-//     console.log(err.name + ": " + err.message);
-//   }); // always check for errors at the end.
-
 // https://stackoverflow.com/a/52952907
-navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+navigator.mediaDevices.getUserMedia({ audio: true, video: false })
   .then(function(stream) {
     audioContext = new AudioContext();
     analyser = audioContext.createAnalyser();
@@ -149,8 +117,7 @@ navigator.mediaDevices.getUserMedia({ audio: true, video: true })
         }
   
         var average = values / length;
-  
-      //console.log(Math.round(average));
+
       audio_level.innerHTML = Math.round(average).toString();
     }
     })
