@@ -1,0 +1,19 @@
+#mapid {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: auto;
+}
+
+.infoContainer {
+  position: absolute;
+  z-index: 1;
+  pointer-events: auto;
+  padding: 2vw;
+  top: 0;
+  right: 0;
+  width: 25vw;
+  height: 90vh;
+  background-color: rgba(255, 255, 255, 0.8);
+}
