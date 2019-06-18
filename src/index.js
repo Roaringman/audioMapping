@@ -1,10 +1,10 @@
-var dotenv = require('dotenv').config()
+const dotenv = require('dotenv').config()
 const DBimport = require("./FireDB.js");
 const express = require("express");
 const path = require("path");
 const reload = require("reload");
 const https = require('https')
-var fs = require('fs')
+const fs = require('fs')
 
 if (dotenv.error) {
   throw dotenv.error
@@ -16,17 +16,12 @@ const db = DBimport.firestore;
 
 app.use(express.static(__dirname + "/public"));
 app.use(express.json({ limit: "1mb" }));
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
 
-app.get("/", (req, res, next) => {
+app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname + "/public/app.html"));
 });
 
-app.post('/api', (request, response, next) => {
+app.post('/api', (request, response) => {
   const data = request.body;
   const d = new Date();
   const serverNow = Math.round(d.getTime() / 1000);
