@@ -1,4 +1,4 @@
-var rsm_block = [];
+var audio_average;
 var gps_block;
 var audio_level = document.getElementById("audio_level");
 var position = document.getElementById("position");
@@ -32,14 +32,12 @@ async function getData() {
       color: "red",
       fillColor: "#f03",
       fillOpacity: 0.5,
-      radius: point.level * 2,
+      radius: point.level * 5,
     }).addTo(mymap);
   });
 }
 
 let time = sliderTime * 60;
-
-getData();
 
 function loadData() {
   resetTimer(sliderTime);
@@ -69,11 +67,11 @@ function tick() {
 }
 
 function read_vars() {
-  let average = array => array.reduce((a, b) => a + b) / array.length;
+  // let average = array => array.reduce((a, b) => a + b) / array.length;
   var d = new Date();
   var frontnow = Math.round(d.getTime() / 1000);
 
-  const level = average(rsm_block);
+  const level = audio_average;
   const lat = gps_block.latitude;
   const lon = gps_block.longitude;
   const timeStamp = frontnow;
@@ -95,6 +93,8 @@ function read_vars() {
     }
   });
 }
+
+getData(); // fetch data from database
 
 // https://stackoverflow.com/a/52952907
 navigator.mediaDevices
@@ -121,9 +121,9 @@ navigator.mediaDevices
         values += array[i];
       }
 
-      var average = values / length;
+      audio_average = values / length;
 
-      audio_level.innerHTML = Math.round(average).toString();
+      audio_level.innerHTML = Math.round(audio_average).toString();
     };
   })
   .catch(function(err) {
