@@ -1,4 +1,5 @@
 const dotenv = require('dotenv').config()
+const pgdb = require('./pg.js')
 const DBimport = require("./FireDB.js");
 const express = require("express");
 const path = require("path");
@@ -9,6 +10,8 @@ const fs = require('fs')
 if (dotenv.error) {
   throw dotenv.error
 }
+
+pgdb.select
 
 const app = express();
 const port = 3000;
