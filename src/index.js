@@ -1,13 +1,13 @@
-const dotenv = require('dotenv').config()
+const dotenv = require("dotenv").config();
 const DBimport = require("./FireDB.js");
 const express = require("express");
 const path = require("path");
 const reload = require("reload");
-const https = require('https')
-const fs = require('fs')
+const https = require("https");
+const fs = require("fs");
 
 if (dotenv.error) {
-  throw dotenv.error
+  throw dotenv.error;
 }
 
 const app = express();
@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname + "/public/app.html"));
 });
 
-app.post('/api', (request, response) => {
+app.post("/api", (request, response) => {
   const data = request.body;
   const d = new Date();
   const serverNow = Math.round(d.getTime() / 1000);
@@ -44,24 +44,22 @@ app.post('/api', (request, response) => {
   response.end();
 });
 
-app.get('/api/read', (request, response) => {
+const responseData = [];
 
-  const responseData = [];
-
-  db.collection("audioPos").where("level", ">=", 1)
+app.get("/api/read", (request, response) => {
+  db.collection("audioPos")
+    .where("level", ">=", 1)
     .get()
-    .then(function (querySnapshot) {
-      querySnapshot.forEach(function (doc) {
+    .then(function(querySnapshot) {
+      querySnapshot.forEach(function(doc) {
         responseData.push(doc.data());
-      }
-      );
+      });
       response.json(responseData);
     })
-    .catch(function (error) {
+    .catch(function(error) {
       console.log("Error getting documents: ", error);
     });
-
-})
+});
 
 // use reload on local machine and https on production environment
 
@@ -73,20 +71,26 @@ if (process.env.LOCALHOST == "true") {
         console.log(`Example app listening on port ${port}!`)
       );
     })
-    .catch(function (err) {
+    .catch(function(err) {
       console.error(
         "Reload could not start, could not start server/sample app",
         err
       );
     });
 } else {
-  https.createServer({
-    key: fs.readFileSync('/etc/letsencrypt/live/lydsans.com/privkey.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/lydsans.com/fullchain.pem')
-  }, app)
-    .listen(port, function () {
-      console.log('app running and listening on port 3000! Go to https://lydsans.com:3000')
+  https
+    .createServer(
+      {
+        key: fs.readFileSync("/etc/letsencrypt/live/lydsans.com/privkey.pem"),
+        cert: fs.readFileSync(
+          "/etc/letsencrypt/live/lydsans.com/fullchain.pem"
+        ),
+      },
+      app
+    )
+    .listen(port, function() {
+      console.log(
+        "app running and listening on port 3000! Go to https://lydsans.com:3000"
+      );
     });
 }
-
-

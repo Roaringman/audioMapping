@@ -8,33 +8,27 @@ var responsesStatus = document.getElementById("responseStatus");
 var reloadTimer = document.getElementById("reloadTimer");
 let sliderTime = document.getElementById("timeToReload").value;
 
-var mymap = L.map("mapid").setView([55.69, 12.5], 11);
-
-L.tileLayer(
-  "https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}",
-  {
-    attribution:
-      'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    maxZoom: 15,
-    id: "mapbox.streets",
-    accessToken:
-      "pk.eyJ1IjoicmdlbmdlbGwiLCJhIjoiY2p3b3c1M21rMGtjMzQzcTk3ZnU0MGxlMyJ9.1ZMDlrrQn98G5QgQVObfRg",
-  }
-).addTo(mymap);
+//Reference to DOM element containing the map
+const mymap = L.map("mapid");
+//Initialize map - Arguments are lat, lon and zoom level.
+buildMap(55.69, 12.5, 12);
+//Create hex grid - Arguments are bounding box array and cell size in kilometershexgrid
+const hexgrid = createHexGrid([12.39, 55.651973, 12.653809, 55.74], 0.5);
+const hexGridLayer = new L.LayerGroup();
+hexGridLayer.addLayer(L.geoJSON(hexgrid));
+hexGridLayer.addTo(mymap);
 
 async function getData() {
+  const audioLocations = [];
   const response = await fetch("/api/read");
   const data = await response.json();
-
-  console.log(data);
-  data.map(point => {
-    L.circle([point.Lat, point.Lon], {
-      color: "red",
-      fillColor: "#f03",
-      fillOpacity: 0.5,
-      radius: point.level * 5,
-    }).addTo(mymap);
+  data.map(audioPoint => {
+    audioLocations.push(
+      turf.point([audioPoint.Lon, audioPoint.Lat, audioPoint.level])
+    );
   });
+  let points = turf.featureCollection(audioLocations);
+  displayPoints(points);
 }
 
 let time = sliderTime * 60;
