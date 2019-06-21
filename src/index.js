@@ -44,22 +44,36 @@ app.post("/api", (request, response) => {
   response.end();
 });
 
-const responseData = [];
-
-app.get("/api/read", (request, response) => {
-  db.collection("audioPos")
-    .where("level", ">=", 1)
-    .get()
-    .then(function(querySnapshot) {
-      querySnapshot.forEach(function(doc) {
-        responseData.push(doc.data());
+const cache = { lastDBRead: 0 };
+const midWare = (request, response, next) => {
+  const d = new Date();
+  const key = Math.round(d.getTime() / 1000) - cache.lastDBRead;
+  console.log(key);
+  if (key < 60 && cache.data) {
+    response.send(cache.data);
+    console.log("Response from cache");
+  } else {
+    const timeNow = Math.round(d.getTime() / 1000);
+    cache["data"] = [];
+    cache["lastDBRead"] = timeNow;
+    console.log("Response from DB");
+    db.collection("audioPos")
+      .where("level", ">=", 1)
+      .get()
+      .then(function(querySnapshot) {
+        querySnapshot.forEach(function(doc) {
+          cache.data.push(doc.data());
+        });
+        response.json(cache.data);
+      })
+      .catch(function(error) {
+        console.log("Error getting documents: ", error);
       });
-      response.json(responseData);
-    })
-    .catch(function(error) {
-      console.log("Error getting documents: ", error);
-    });
-});
+  }
+  next();
+};
+
+app.get("/api/read", midWare, (request, response) => {});
 
 // use reload on local machine and https on production environment
 

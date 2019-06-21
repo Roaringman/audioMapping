@@ -10,6 +10,7 @@ let sliderTime = document.getElementById("timeToReload").value;
 
 //Reference to DOM element containing the map
 const mymap = L.map("mapid");
+
 //Initialize map - Arguments are lat, lon and zoom level.
 buildMap(55.69, 12.5, 12);
 //Create hex grid - Arguments are bounding box array and cell size in kilometershexgrid
@@ -17,18 +18,19 @@ const hexgrid = createHexGrid([12.39, 55.651973, 12.653809, 55.74], 0.5);
 const hexGridLayer = new L.LayerGroup();
 hexGridLayer.addLayer(L.geoJSON(hexgrid));
 hexGridLayer.addTo(mymap);
+const audioLocations = [];
 
 async function getData() {
-  const audioLocations = [];
   const response = await fetch("/api/read");
   const data = await response.json();
   data.map(audioPoint => {
     audioLocations.push(
-      turf.point([audioPoint.Lon, audioPoint.Lat, audioPoint.level])
+      turf.point([audioPoint.Lon, audioPoint.Lat], { level: audioPoint.level })
     );
   });
-  let points = turf.featureCollection(audioLocations);
-  displayPoints(points);
+  let points = await turf.featureCollection(audioLocations);
+  await displayPoints(points);
+  await spatialJoin(points, hexgrid);
 }
 
 let time = sliderTime * 60;

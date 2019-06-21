@@ -1,8 +1,3 @@
-var url = "./omraader_WGS84_Geographical.geojson";
-d3.json(url, function(json) {
-  console.log(json);
-});
-
 function buildMap(lat, lon, zoom) {
   mymap.setView([lat, lon], zoom);
   L.tileLayer(
@@ -22,11 +17,8 @@ function createHexGrid(bbox, cellsize) {
   const area = bbox;
   const cellSize = cellsize;
   const options = { units: "kilometers" };
-  const grid = turf.hexGrid(area, cellSize, options);
-
-  grid.features.forEach((cell, i) => {
-    cell.properties.id = i;
-  });
+  const properties = { id: Math.random() * 1000 };
+  let grid = turf.hexGrid(area, cellSize, options, properties);
 
   return grid;
 }
@@ -46,7 +38,9 @@ function displayPoints(points) {
 }
 
 function spatialJoin(points, polygons) {
-  return turf.tag(points, polygons, "pop", "population");
+  //console.log(turf.collectionOf(points, "points", "points"));
+  let collected = turf.collect(polygons, points, "level", "level");
+  collected.features.forEach(hasLevel => console.log(hasLevel.properties));
 }
 
 const colorScale = d3.scaleSequential(d3.interpolateInferno).domain([0, 100]);
