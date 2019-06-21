@@ -13,6 +13,8 @@ if (dotenv.error) {
 const app = express();
 const port = 3000;
 const db = DBimport.firestore;
+const cache = { lastDBRead: 0 };
+const cacheResetTimer = 60; //seconds
 
 app.use(express.static(__dirname + "/public"));
 app.use(express.json({ limit: "1mb" }));
@@ -44,19 +46,18 @@ app.post("/api", (request, response) => {
   response.end();
 });
 
-const cache = { lastDBRead: 0 };
+// Express middleware used for caching.
+// If the request comes in before the cacheResetTimer, the response will be send from the cache.
+// If there is no cache yet or the request comes later than the cacheResetTimer, the response is send from the Database and the cache is reset.
 const midWare = (request, response, next) => {
   const d = new Date();
-  const key = Math.round(d.getTime() / 1000) - cache.lastDBRead;
-  console.log(key);
-  if (key < 60 && cache.data) {
+  const timeNow = Math.round(d.getTime() / 1000);
+  const key = timeNow - cache.lastDBRead;
+  if (key < cacheResetTimer && cache.data) {
     response.send(cache.data);
-    console.log("Response from cache");
   } else {
-    const timeNow = Math.round(d.getTime() / 1000);
     cache["data"] = [];
     cache["lastDBRead"] = timeNow;
-    console.log("Response from DB");
     db.collection("audioPos")
       .where("level", ">=", 1)
       .get()

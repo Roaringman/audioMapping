@@ -17,14 +17,17 @@ function createHexGrid(bbox, cellsize) {
   const area = bbox;
   const cellSize = cellsize;
   const options = { units: "kilometers" };
-  const properties = { id: Math.random() * 1000 };
-  let grid = turf.hexGrid(area, cellSize, options, properties);
+  let grid = turf.hexGrid(area, cellSize, options);
 
+  const addID = function(feature, i) {
+    return (feature.properties = { id: i });
+  };
+  grid.features.map(addID);
   return grid;
 }
 
 function displayPoints(points) {
-  let circleLayer = new L.LayerGroup();
+  mymap.removeLayer(circleLayer);
   circleLayer.addLayer(
     L.geoJSON(points, {
       color: "red",
@@ -38,9 +41,30 @@ function displayPoints(points) {
 }
 
 function spatialJoin(points, polygons) {
-  //console.log(turf.collectionOf(points, "points", "points"));
   let collected = turf.collect(polygons, points, "level", "level");
-  collected.features.forEach(hasLevel => console.log(hasLevel.properties));
+
+  const addColor = function(feature) {
+    if (feature.properties.level.length > 0) {
+      const sum = feature.properties.level.reduce(function(
+        accumulator,
+        currentValue
+      ) {
+        return accumulator + currentValue;
+      });
+      const average = sum / feature.properties.level.length;
+
+      return Object.assign(feature.properties, {
+        soundLevel: average,
+      });
+    } else {
+      return Object.assign(feature.properties, {
+        soundLevel: "Not measured :(",
+      });
+    }
+  };
+  collected.features.map(addColor);
+
+  return collected;
 }
 
-const colorScale = d3.scaleSequential(d3.interpolateInferno).domain([0, 100]);
+const colorScale = d3.scaleSequential(d3.interpolateWarm).domain([0, 50]);

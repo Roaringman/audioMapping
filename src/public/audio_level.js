@@ -13,11 +13,13 @@ const mymap = L.map("mapid");
 
 //Initialize map - Arguments are lat, lon and zoom level.
 buildMap(55.69, 12.5, 12);
+
 //Create hex grid - Arguments are bounding box array and cell size in kilometershexgrid
-const hexgrid = createHexGrid([12.39, 55.651973, 12.653809, 55.74], 0.5);
+const hexgrid = createHexGrid([12.45, 55.591973, 12.663809, 55.71], 0.5);
+console.log(hexgrid);
 const hexGridLayer = new L.LayerGroup();
-hexGridLayer.addLayer(L.geoJSON(hexgrid));
-hexGridLayer.addTo(mymap);
+const circleLayer = new L.LayerGroup();
+
 const audioLocations = [];
 
 async function getData() {
@@ -29,8 +31,32 @@ async function getData() {
     );
   });
   let points = await turf.featureCollection(audioLocations);
-  await displayPoints(points);
-  await spatialJoin(points, hexgrid);
+  //await displayPoints(points);
+  const joined = await spatialJoin(points, hexgrid);
+  console.log(joined);
+  hexGridLayer.addLayer(
+    L.geoJSON(joined, {
+      style: function(feature) {
+        if (feature.properties.soundLevel > 0) {
+          return {
+            color: colorScale(feature.properties.soundLevel),
+            fillOpacity: 0.5,
+          };
+        } else {
+          return {
+            color: "d3d3d3",
+            fillOpacity: 0.2,
+          };
+        }
+      },
+    }).bindPopup(function(layer) {
+      return `The average sound level here is: ${
+        layer.feature.properties.soundLevel
+      }`;
+    })
+  );
+
+  hexGridLayer.addTo(mymap);
 }
 
 let time = sliderTime * 60;
