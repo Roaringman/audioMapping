@@ -25,7 +25,7 @@ const audioLocations = [];
 let scale = d3
   .scaleLinear()
   .domain([1, 100])
-  .range([0.1, 1]);
+  .range([0.1, 0.9]);
 
 async function getData() {
   const response = await fetch("/api/read");
@@ -63,7 +63,7 @@ async function getData() {
       } based on ${layer.feature.properties.level.length} observations`;
     })
   );
-
+  bins(joined);
   hexGridLayer.addTo(mymap);
 }
 
