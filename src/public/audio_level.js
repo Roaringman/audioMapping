@@ -9,15 +9,22 @@ var reloadTimer = document.getElementById("reloadTimer");
 let sliderTime = document.getElementById("timeToReload").value;
 
 //Reference to DOM element containing the map
-const mymap = L.map("mapid");
+const mymap = L.map("mapid", {
+  attributionControl: false,
+});
+L.control.attribution({ position: "bottomleft" }).addTo(mymap);
 
-//Initialize map - Arguments are lat, lon and zoom level.
-buildMap(55.69, 12.5, 12);
-
-//Create hex grid - Arguments are bounding box array and cell size in kilometershexgrid
+//Create hex grid - Arguments are bounding box array and cell size in kilometers
 const bbox = [12.45, 55.591973, 12.663809, 55.71];
 const areaBbox = turf.bboxPolygon(bbox);
 const hexgrid = createHexGrid(bbox, 0.5);
+const center = turf.center(hexgrid);
+const initLon = center.geometry.coordinates[0];
+const initLat = center.geometry.coordinates[1];
+
+//Initialize map - Arguments are lat, lon and zoom level.
+buildMap(initLat, initLon, 12);
+
 const hexGridLayer = new L.LayerGroup();
 const circleLayer = new L.LayerGroup();
 const audioLocations = [];
