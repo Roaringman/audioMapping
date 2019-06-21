@@ -23,7 +23,7 @@ const initLon = center.geometry.coordinates[0];
 const initLat = center.geometry.coordinates[1];
 
 //Initialize map - Arguments are lat, lon and zoom level.
-buildMap(initLat, initLon, 12);
+buildMap(initLat, initLon, 11);
 
 const hexGridLayer = new L.LayerGroup();
 const circleLayer = new L.LayerGroup();
