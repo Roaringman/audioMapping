@@ -107,20 +107,25 @@ function read_vars() {
     },
     body: JSON.stringify(data),
   };
+
   let currentLocation = turf.point([lon, lat]);
+  displayPoints(currentLocation);
+  /*let areaBbox = turf.polygon(bbox);
+  console.log(areaBbox);
+  console.log(currentLocation);*/
   //Check if user is inside the grid and only posts if that is the case
-  if (turf.booleanPointInPolygon(currentLocation, hexgrid)) {
-    fetch("/api", options).then(response => {
-      if (response.status === 200) {
-        responsesStatus.innerHTML = "Successfully sent data";
-      } else {
-        responsesStatus.innerHTML = "Could not send data to server!";
-      }
-    });
-  } else {
-    responsesStatus.innerHTML =
-      "Did not send data. You do not appear to be inside the area";
-  }
+  // if (turf.booleanPointInPolygon(currentLocation, areaBbox)) {
+  fetch("/api", options).then(response => {
+    if (response.status === 200) {
+      responsesStatus.innerHTML = "Successfully sent data";
+    } else {
+      responsesStatus.innerHTML = "Could not send data to server!";
+    }
+  });
+  //} else {
+  responsesStatus.innerHTML =
+    "Did not send data. You do not appear to be inside the area";
+  // }
 }
 
 getData(); // fetch data from database

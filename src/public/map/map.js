@@ -67,4 +67,4 @@ function spatialJoin(points, polygons) {
   return collected;
 }
 
-const colorScale = d3.scaleSequential(d3.interpolateWarm).domain([0, 50]);
+const colorScale = d3.scaleSequential(d3.interpolateWarm).domain([0, 100]);
