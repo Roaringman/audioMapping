@@ -13,33 +13,70 @@ var responsesStatus = document.getElementById("responseStatus");
 var reloadTimer = document.getElementById("reloadTimer");
 let sliderTime = document.getElementById("timeToReload").value;
 
-var mymap = L.map("mapid").setView([55.69, 12.5], 11);
+//Reference to DOM element containing the map
+const mymap = L.map("mapid", {
+  attributionControl: false,
+});
+L.control.attribution({ position: "bottomleft" }).addTo(mymap);
 
-L.tileLayer(
-  "https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}",
-  {
-    attribution:
-      'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    maxZoom: 15,
-    id: "mapbox.streets",
-    accessToken:
-      "pk.eyJ1IjoicmdlbmdlbGwiLCJhIjoiY2p3b3c1M21rMGtjMzQzcTk3ZnU0MGxlMyJ9.1ZMDlrrQn98G5QgQVObfRg",
-  }
-).addTo(mymap);
+//Create hex grid - Arguments are bounding box array and cell size in kilometers
+const bbox = [12.45, 55.591973, 12.663809, 55.71];
+const areaBbox = turf.bboxPolygon(bbox);
+const hexgrid = createHexGrid(bbox, 0.5);
+const center = turf.center(hexgrid);
+const initLon = center.geometry.coordinates[0];
+const initLat = center.geometry.coordinates[1];
+
+//Initialize map - Arguments are lat, lon and zoom level.
+buildMap(initLat, initLon, 11);
+
+const hexGridLayer = new L.LayerGroup();
+const circleLayer = new L.LayerGroup();
+const audioLocations = [];
+
+let scale = d3
+  .scaleLinear()
+  .domain([1, 100])
+  .range([0.1, 0.9]);
 
 async function getData() {
   const response = await fetch("/api/read");
   const data = await response.json();
-
-  console.log(data);
-  data.map(point => {
-    L.circle([point.lat, point.lon], {
-      color: "red",
-      fillColor: "#f03",
-      fillOpacity: 0.5,
-      radius: point.level * 5,
-    }).addTo(mymap);
+  data.map(audioPoint => {
+    audioLocations.push(
+      turf.point([audioPoint.lon, audioPoint.lat], { level: audioPoint.level })
+    );
   });
+  let points = await turf.featureCollection(audioLocations);
+  //await displayPoints(points);
+  const joined = await spatialJoin(points, hexgrid);
+  hexGridLayer.addLayer(
+    L.geoJSON(joined, {
+      style: function(feature) {
+        if (feature.properties.soundLevel > 0) {
+          return {
+            color: colorScale(feature.properties.soundLevel),
+            weight: 2,
+            opacity: 1,
+            fillOpacity: scale(feature.properties["level"].length),
+          };
+        } else {
+          return {
+            color: "d3d3d3",
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.1,
+          };
+        }
+      },
+    }).bindPopup(function(layer) {
+      return `The average sound level here is: ${
+        layer.feature.properties.soundLevel
+      } based on ${layer.feature.properties.level.length} observations`;
+    })
+  );
+  bins(joined);
+  hexGridLayer.addTo(mymap);
 }
 
 let time = sliderTime * 60;
@@ -94,22 +131,22 @@ function read_vars() {
     body: JSON.stringify(data),
   };
 
-  // only send data if position changed or more than 60 secounds passed
-  if (last_commit.time + 60 < timeStamp && last_commit.lat != lat && last_commit.lon != lon) {
+  let currentLocation = turf.point([lon, lat]);
+
+  //Check if user is inside the grid and only posts if that is the case
+  if (turf.booleanPointInPolygon(currentLocation, areaBbox) && last_commit.time + 60 < timeStamp && last_commit.lat != lat && last_commit.lon != lon) {
     fetch("/api", options).then(response => {
       if (response.status === 200) {
-        responsesStatus.innerHTML = "Successfully sent data",
-        last_commit.time = timeStamp;
+        responsesStatus.innerHTML = "Successfully sent data";
       } else {
         responsesStatus.innerHTML = "Could not send data to server!";
       }
     });
-
   } else {
-    console.log('INFO\t no reason to send data')
+    responsesStatus.innerHTML =
+      "Did not send data. You do not appear to be inside the area";
+      // or no change to position or timer not reached 
   }
-
-
 }
 
 getData(); // fetch data from database

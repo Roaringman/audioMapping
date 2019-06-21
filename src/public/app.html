@@ -4,6 +4,10 @@
     <head>
       <meta charset="utf-8" />
       <title>Audio level v0.2</title>
+      <link
+        href="https://fonts.googleapis.com/css?family=Raleway&display=swap"
+        rel="stylesheet"
+      />
       <link rel="stylesheet" href="./css/reset.css" />
 
       <link rel="stylesheet" href="./css/style.css" />
@@ -13,44 +17,54 @@
         integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
         crossorigin=""
       />
+      <script src="./pwabuilder-sw-register.js"></script>
+
       <script
         src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
         integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
         crossorigin=""
       ></script>
+
+      <script src="https://npmcdn.com/@turf/turf/turf.min.js"></script>
+      <script src="https://d3js.org/d3.v5.min.js"></script>
+      <link rel="manifest" href="/manifest.json" />
     </head>
 
     <body>
       <div class="infoContainer">
-        <h1 id="responseStatus"></h1>
-        <h1>Audio level readings</h1>
-        <p id="audio_level">No readings</p>
-        <h1>GPS</h1>
-        <h2>position</h2>
-        <p id="position">No readings</p>
-        <h2>accuracy</h2>
-        <p id="accuracy">No readings</p>
-        <h2>timestamp</h2>
-        <p id="timestamp">No readings</p>
+        <div class="textInfo">
+          <h1 id="responseStatus"></h1>
+          <h1>Audio level readings</h1>
+          <p id="audio_level">No readings</p>
+          <h1>GPS</h1>
+          <h2>position</h2>
+          <p id="position">No readings</p>
+          <h2>accuracy</h2>
+          <p id="accuracy">No readings</p>
+          <h2>timestamp</h2>
+          <p id="timestamp">No readings</p>
 
-        <label for="timeToReload">Set time to next data load: </label>
-        <div class="slidecontainer">
-          <section>
-            <input
-              type="range"
-              min="1"
-              max="10"
-              value="10"
-              class="slider"
-              id="timeToReload"
-              onchange="updateSlider(this.value)"
-            />
-            <figcaption>
-              Reloading map data in: <span id="reloadTimer"></span>
-            </figcaption>
-          </section>
-          <button onClick="loadData()">Load Data</button>
+          <label for="timeToReload">Set time to next data load: </label>
+          <div class="slidecontainer">
+            <section>
+              <input
+                type="range"
+                min="1"
+                max="10"
+                value="10"
+                class="slider"
+                id="timeToReload"
+                onchange="updateSlider(this.value)"
+              />
+              <figcaption>
+                Reloading map data in: <span id="reloadTimer"></span>
+              </figcaption>
+            </section>
+            <button onClick="loadData()">Load Data</button>
+          </div>
         </div>
+
+        <div class="graphInfo" id="barGraph"></div>
       </div>
 
       <div id="mapid"></div>
@@ -62,6 +76,9 @@
         );
       }
     </script>
+
+    <script src="./map/map.js"></script>
     <script src="audio_level.js"></script>
+    <script src="./map/barGraph.js"></script>
   </html>
 </html>
