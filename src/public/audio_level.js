@@ -108,6 +108,7 @@ function read_vars() {
     body: JSON.stringify(data),
   };
   let currentLocation = turf.point([lon, lat]);
+  //Check if user is inside the grid and only posts if that is the case
   if (turf.booleanPointInPolygon(currentLocation, hexgrid)) {
     fetch("/api", options).then(response => {
       if (response.status === 200) {
