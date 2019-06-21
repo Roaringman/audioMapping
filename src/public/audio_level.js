@@ -15,7 +15,8 @@ const mymap = L.map("mapid");
 buildMap(55.69, 12.5, 12);
 
 //Create hex grid - Arguments are bounding box array and cell size in kilometershexgrid
-const hexgrid = createHexGrid([12.45, 55.591973, 12.663809, 55.71], 0.5);
+const bbox = [12.45, 55.591973, 12.663809, 55.71];
+const hexgrid = createHexGrid(bbox, 0.5);
 console.log(hexgrid);
 const hexGridLayer = new L.LayerGroup();
 const circleLayer = new L.LayerGroup();
@@ -33,7 +34,6 @@ async function getData() {
   let points = await turf.featureCollection(audioLocations);
   //await displayPoints(points);
   const joined = await spatialJoin(points, hexgrid);
-  console.log(joined);
   hexGridLayer.addLayer(
     L.geoJSON(joined, {
       style: function(feature) {
@@ -107,13 +107,19 @@ function read_vars() {
     },
     body: JSON.stringify(data),
   };
-  fetch("/api", options).then(response => {
-    if (response.status === 200) {
-      responsesStatus.innerHTML = "Successfully sent data";
-    } else {
-      responsesStatus.innerHTML = "Could not send data to server!";
-    }
-  });
+  let currentLocation = turf.point([lon, lat]);
+  if (turf.booleanPointInPolygon(currentLocation, hexgrid)) {
+    fetch("/api", options).then(response => {
+      if (response.status === 200) {
+        responsesStatus.innerHTML = "Successfully sent data";
+      } else {
+        responsesStatus.innerHTML = "Could not send data to server!";
+      }
+    });
+  } else {
+    responsesStatus.innerHTML =
+      "Did not send data. You do not appear to be inside the area";
+  }
 }
 
 getData(); // fetch data from database
