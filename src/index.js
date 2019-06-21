@@ -1,6 +1,6 @@
 const dotenv = require('dotenv').config()
 const pgdb = require('./pg.js')
-const DBimport = require("./FireDB.js");
+// const DBimport = require("./FireDB.js");
 const express = require("express");
 const path = require("path");
 const reload = require("reload");
@@ -11,11 +11,9 @@ if (dotenv.error) {
   throw dotenv.error
 }
 
-pgdb.select
-
 const app = express();
 const port = 3000;
-const db = DBimport.firestore;
+//const db = DBimport.firestore;
 
 app.use(express.static(__dirname + "/public"));
 app.use(express.json({ limit: "1mb" }));
@@ -31,17 +29,7 @@ app.post('/api', (request, response) => {
 
   const { timeStamp, level, lat, lon } = data;
 
-  db.collection("audioPos")
-    .add({
-      clintTime: timeStamp,
-      serverTime: serverNow - timeStamp,
-      level: level,
-      Lat: lat,
-      Lon: lon,
-    })
-    .then(ref => {
-      console.log("Added document with ID: ", ref.id);
-    });
+  pgdb.insert(level, lat, lon, timeStamp)
 
   response.json = { status: "Success" };
   response.end();
@@ -49,20 +37,12 @@ app.post('/api', (request, response) => {
 
 app.get('/api/read', (request, response) => {
 
-  const responseData = [];
+  function send_res(response){
+    console.log('row:', )
+    return response.json(rows);
+  }
 
-  db.collection("audioPos").where("level", ">=", 1)
-    .get()
-    .then(function (querySnapshot) {
-      querySnapshot.forEach(function (doc) {
-        responseData.push(doc.data());
-      }
-      );
-      response.json(responseData);
-    })
-    .catch(function (error) {
-      console.log("Error getting documents: ", error);
-    });
+  var rows = pgdb.select(response);
 
 })
 

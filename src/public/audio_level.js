@@ -1,5 +1,10 @@
 var audio_average;
 var gps_block;
+var last_commit = {
+  time: null,
+  lat: null,
+  long: null
+}
 var audio_level = document.getElementById("audio_level");
 var position = document.getElementById("position");
 var accuracy = document.getElementById("accuracy");
@@ -28,7 +33,7 @@ async function getData() {
 
   console.log(data);
   data.map(point => {
-    L.circle([point.Lat, point.Lon], {
+    L.circle([point.lat, point.lon], {
       color: "red",
       fillColor: "#f03",
       fillOpacity: 0.5,
@@ -67,6 +72,9 @@ function tick() {
 }
 
 function read_vars() {
+
+  // TODO: devide in a read function and a fecth function
+
   // let average = array => array.reduce((a, b) => a + b) / array.length;
   var d = new Date();
   var frontnow = Math.round(d.getTime() / 1000);
@@ -85,13 +93,23 @@ function read_vars() {
     },
     body: JSON.stringify(data),
   };
-  fetch("/api", options).then(response => {
-    if (response.status === 200) {
-      responsesStatus.innerHTML = "Successfully sent data";
-    } else {
-      responsesStatus.innerHTML = "Could not send data to server!";
-    }
-  });
+
+  // only send data if position changed or more than 60 secounds passed
+  if (last_commit.time + 60 < timeStamp && last_commit.lat != lat && last_commit.lon != lon) {
+    fetch("/api", options).then(response => {
+      if (response.status === 200) {
+        responsesStatus.innerHTML = "Successfully sent data",
+        last_commit.time = timeStamp;
+      } else {
+        responsesStatus.innerHTML = "Could not send data to server!";
+      }
+    });
+
+  } else {
+    console.log('INFO\t no reason to send data')
+  }
+
+
 }
 
 getData(); // fetch data from database
@@ -99,7 +117,7 @@ getData(); // fetch data from database
 // https://stackoverflow.com/a/52952907
 navigator.mediaDevices
   .getUserMedia({ audio: true, video: false })
-  .then(function(stream) {
+  .then(function (stream) {
     audioContext = new AudioContext();
     analyser = audioContext.createAnalyser();
     microphone = audioContext.createMediaStreamSource(stream);
@@ -111,7 +129,7 @@ navigator.mediaDevices
     microphone.connect(analyser);
     analyser.connect(javascriptNode);
     javascriptNode.connect(audioContext.destination);
-    javascriptNode.onaudioprocess = function() {
+    javascriptNode.onaudioprocess = function () {
       var array = new Uint8Array(analyser.frequencyBinCount);
       analyser.getByteFrequencyData(array);
       var values = 0;
@@ -126,7 +144,7 @@ navigator.mediaDevices
       audio_level.innerHTML = Math.round(audio_average).toString();
     };
   })
-  .catch(function(err) {
+  .catch(function (err) {
     console.log(err.name + ": " + err.message);
   });
 
