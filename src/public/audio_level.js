@@ -18,11 +18,14 @@ buildMap(55.69, 12.5, 12);
 const bbox = [12.45, 55.591973, 12.663809, 55.71];
 const areaBbox = turf.bboxPolygon(bbox);
 const hexgrid = createHexGrid(bbox, 0.5);
-console.log(hexgrid);
 const hexGridLayer = new L.LayerGroup();
 const circleLayer = new L.LayerGroup();
-
 const audioLocations = [];
+
+let scale = d3
+  .scaleLinear()
+  .domain([1, 100])
+  .range([0.1, 1]);
 
 async function getData() {
   const response = await fetch("/api/read");
@@ -41,19 +44,23 @@ async function getData() {
         if (feature.properties.soundLevel > 0) {
           return {
             color: colorScale(feature.properties.soundLevel),
-            fillOpacity: 0.5,
+            weight: 2,
+            opacity: 1,
+            fillOpacity: scale(feature.properties["level"].length),
           };
         } else {
           return {
             color: "d3d3d3",
-            fillOpacity: 0.2,
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.1,
           };
         }
       },
     }).bindPopup(function(layer) {
       return `The average sound level here is: ${
         layer.feature.properties.soundLevel
-      }`;
+      } based on ${layer.feature.properties.level.length} observations`;
     })
   );
 
