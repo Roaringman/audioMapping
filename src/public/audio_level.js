@@ -16,6 +16,7 @@ buildMap(55.69, 12.5, 12);
 
 //Create hex grid - Arguments are bounding box array and cell size in kilometershexgrid
 const bbox = [12.45, 55.591973, 12.663809, 55.71];
+const areaBbox = turf.bboxPolygon(bbox);
 const hexgrid = createHexGrid(bbox, 0.5);
 console.log(hexgrid);
 const hexGridLayer = new L.LayerGroup();
@@ -109,23 +110,20 @@ function read_vars() {
   };
 
   let currentLocation = turf.point([lon, lat]);
-  displayPoints(currentLocation);
-  /*let areaBbox = turf.polygon(bbox);
-  console.log(areaBbox);
-  console.log(currentLocation);*/
+
   //Check if user is inside the grid and only posts if that is the case
-  // if (turf.booleanPointInPolygon(currentLocation, areaBbox)) {
-  fetch("/api", options).then(response => {
-    if (response.status === 200) {
-      responsesStatus.innerHTML = "Successfully sent data";
-    } else {
-      responsesStatus.innerHTML = "Could not send data to server!";
-    }
-  });
-  //} else {
-  responsesStatus.innerHTML =
-    "Did not send data. You do not appear to be inside the area";
-  // }
+  if (turf.booleanPointInPolygon(currentLocation, areaBbox)) {
+    fetch("/api", options).then(response => {
+      if (response.status === 200) {
+        responsesStatus.innerHTML = "Successfully sent data";
+      } else {
+        responsesStatus.innerHTML = "Could not send data to server!";
+      }
+    });
+  } else {
+    responsesStatus.innerHTML =
+      "Did not send data. You do not appear to be inside the area";
+  }
 }
 
 getData(); // fetch data from database
