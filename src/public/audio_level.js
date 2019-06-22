@@ -22,7 +22,7 @@ L.control.attribution({ position: "bottomleft" }).addTo(mymap);
 //Create hex grid - Arguments are bounding box array and cell size in kilometers
 const bbox = [12.45, 55.591973, 12.663809, 55.71];
 const areaBbox = turf.bboxPolygon(bbox);
-const hexgrid = createHexGrid(bbox, 0.5);
+const hexgrid = createHexGrid(bbox, 0.2);
 const center = turf.center(hexgrid);
 const initLon = center.geometry.coordinates[0];
 const initLat = center.geometry.coordinates[1];
