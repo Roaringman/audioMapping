@@ -27,7 +27,7 @@ app.get("/", (req, res) => {
 app.post("/api", (request, response) => {
   const data = request.body;
   const d = new Date();
-  const serverNow = Math.round(d.getTime() / 1000);
+  const serverNow = Math.round(d.getTime() / 1000); //TODO: add to db + local time zone instead of UTC
 
   const { timeStamp, level, lat, lon } = data;
 

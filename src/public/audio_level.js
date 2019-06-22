@@ -114,7 +114,7 @@ function read_vars() {
 
   // let average = array => array.reduce((a, b) => a + b) / array.length;
   var d = new Date();
-  var frontnow = Math.round(d.getTime() / 1000);
+  var frontnow = Math.round(d.getTime() / 1000); //TODO: local time zone instead of UTC
 
   const level = audio_average;
   const lat = gps_block.latitude;
