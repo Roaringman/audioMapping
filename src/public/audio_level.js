@@ -3,8 +3,8 @@ var gps_block;
 var last_commit = {
   time: null,
   lat: null,
-  long: null
-}
+  long: null,
+};
 var audio_level = document.getElementById("audio_level");
 var position = document.getElementById("position");
 var accuracy = document.getElementById("accuracy");
@@ -32,7 +32,6 @@ buildMap(initLat, initLon, 11);
 
 const hexGridLayer = new L.LayerGroup();
 const circleLayer = new L.LayerGroup();
-const audioLocations = [];
 
 let scale = d3
   .scaleLinear()
@@ -40,6 +39,8 @@ let scale = d3
   .range([0.1, 0.9]);
 
 async function getData() {
+  const audioLocations = [];
+
   const response = await fetch("/api/read");
   const data = await response.json();
   data.map(audioPoint => {
@@ -50,33 +51,38 @@ async function getData() {
   let points = await turf.featureCollection(audioLocations);
   //await displayPoints(points);
   const joined = await spatialJoin(points, hexgrid);
-  hexGridLayer.addLayer(
-    L.geoJSON(joined, {
-      style: function(feature) {
-        if (feature.properties.soundLevel > 0) {
-          return {
-            color: colorScale(feature.properties.soundLevel),
-            weight: 2,
-            opacity: 1,
-            fillOpacity: scale(feature.properties["level"].length),
-          };
-        } else {
-          return {
-            color: "d3d3d3",
-            weight: 1,
-            opacity: 1,
-            fillOpacity: 0.1,
-          };
-        }
-      },
-    }).bindPopup(function(layer) {
-      return `The average sound level here is: ${
-        layer.feature.properties.soundLevel
-      } based on ${layer.feature.properties.level.length} observations`;
-    })
-  );
+  if (!mymap.hasLayer(hexGridLayer)) {
+    hexGridLayer.addLayer(
+      L.geoJSON(joined, {
+        style: function(feature) {
+          if (feature.properties.soundLevel > 0) {
+            return {
+              color: colorScale(feature.properties.soundLevel),
+              weight: 2,
+              opacity: 1,
+              fillOpacity: scale(feature.properties["level"].length),
+            };
+          } else {
+            return {
+              color: "d3d3d3",
+              weight: 1,
+              opacity: 1,
+              fillOpacity: 0.1,
+            };
+          }
+        },
+      }).bindPopup(function(layer) {
+        return `The average sound level here is: ${
+          layer.feature.properties.soundLevel
+        } based on ${layer.feature.properties.level.length} observations`;
+      })
+    );
+    hexGridLayer.addTo(mymap);
+  } else {
+    mymap.removeLayer(hexGridLayer);
+    hexGridLayer.addTo(mymap);
+  }
   bins(joined);
-  hexGridLayer.addTo(mymap);
 }
 
 let time = sliderTime * 60;
@@ -109,7 +115,6 @@ function tick() {
 }
 
 function read_vars() {
-
   // TODO: devide in a read function and a fecth function
 
   // let average = array => array.reduce((a, b) => a + b) / array.length;
@@ -134,24 +139,28 @@ function read_vars() {
   let currentLocation = turf.point([lon, lat]);
 
   //Check if user is inside the grid and only posts if that is the case
-  if ( ! turf.booleanPointInPolygon(currentLocation, areaBbox)){
+  if (!turf.booleanPointInPolygon(currentLocation, areaBbox)) {
     responsesStatus.innerHTML =
       "Did not send data. You do not appear to be inside the area";
   }
-  if (last_commit.time + 60 < timeStamp || last_commit.lat != lat || last_commit.lon != lon) {
+  if (
+    last_commit.time + 60 < timeStamp ||
+    last_commit.lat != lat ||
+    last_commit.lon != lon
+  ) {
     fetch("/api", options).then(response => {
       if (response.status === 200) {
-        responsesStatus.innerHTML = "Successfully sent data",
-        last_commit.time = timeStamp,
-        last_commit.lat = lat,
-        last_commit.lon = lon
+        (responsesStatus.innerHTML = "Successfully sent data"),
+          (last_commit.time = timeStamp),
+          (last_commit.lat = lat),
+          (last_commit.lon = lon);
       } else {
         responsesStatus.innerHTML = "Could not send data to server!";
       }
     });
   } else {
     responsesStatus.innerHTML =
-    "Did not send data. No position change or timer not exceeded";
+      "Did not send data. No position change or timer not exceeded";
   }
 }
 
@@ -160,7 +169,7 @@ getData(); // fetch data from database
 // https://stackoverflow.com/a/52952907
 navigator.mediaDevices
   .getUserMedia({ audio: true, video: false })
-  .then(function (stream) {
+  .then(function(stream) {
     audioContext = new AudioContext();
     analyser = audioContext.createAnalyser();
     microphone = audioContext.createMediaStreamSource(stream);
@@ -172,7 +181,7 @@ navigator.mediaDevices
     microphone.connect(analyser);
     analyser.connect(javascriptNode);
     javascriptNode.connect(audioContext.destination);
-    javascriptNode.onaudioprocess = function () {
+    javascriptNode.onaudioprocess = function() {
       var array = new Uint8Array(analyser.frequencyBinCount);
       analyser.getByteFrequencyData(array);
       var values = 0;
@@ -187,7 +196,7 @@ navigator.mediaDevices
       audio_level.innerHTML = Math.round(audio_average).toString();
     };
   })
-  .catch(function (err) {
+  .catch(function(err) {
     console.log(err.name + ": " + err.message);
   });
 
@@ -216,6 +225,31 @@ options = {
 
 id = navigator.geolocation.watchPosition(success, error, options);
 
-var uploadTimeMax = 60 //sec
-var uploadTimeMin = 5 //sec
+var uploadTimeMax = 60; //sec
+var uploadTimeMin = 5; //sec
 setInterval(read_vars, uploadTimeMin * 1000);
+
+let deferredPrompt = null;
+
+window.addEventListener("beforeinstallprompt", e => {
+  // Prevent Chrome 67 and earlier from automatically showing the prompt
+  e.preventDefault();
+  // Stash the event so it can be triggered later.
+  deferredPrompt = e;
+});
+
+async function install() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    console.log(deferredPrompt);
+    deferredPrompt.userChoice.then(function(choiceResult) {
+      if (choiceResult.outcome === "accepted") {
+        console.log("Your PWA has been installed");
+      } else {
+        console.log("User chose to not install your PWA");
+      }
+
+      deferredPrompt = null;
+    });
+  }
+}
