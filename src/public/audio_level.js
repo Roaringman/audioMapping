@@ -123,22 +123,23 @@ function read_vars() {
 
   const data = { level, lat, lon, timeStamp };
 
-  const options = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  };
-
   let currentLocation = turf.point([lon, lat]);
 
-  //Check if user is inside the grid and only posts if that is the case
+  //Check if user is inside the grid. Only upload data if true
   if ( ! turf.booleanPointInPolygon(currentLocation, areaBbox)){
     responsesStatus.innerHTML =
       "Did not send data. You do not appear to be inside the area";
   }
   if (last_commit.time + 60 < timeStamp || last_commit.lat != lat || last_commit.lon != lon) {
+
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    };
+
     fetch("/api", options).then(response => {
       if (response.status === 200) {
         responsesStatus.innerHTML = "Successfully sent data",
