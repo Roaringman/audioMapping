@@ -134,18 +134,24 @@ function read_vars() {
   let currentLocation = turf.point([lon, lat]);
 
   //Check if user is inside the grid and only posts if that is the case
-  if (turf.booleanPointInPolygon(currentLocation, areaBbox) && last_commit.time + 60 < timeStamp && last_commit.lat != lat && last_commit.lon != lon) {
+  if ( ! turf.booleanPointInPolygon(currentLocation, areaBbox)){
+    responsesStatus.innerHTML =
+      "Did not send data. You do not appear to be inside the area";
+  }
+  if (last_commit.time + 60 < timeStamp || last_commit.lat != lat || last_commit.lon != lon) {
     fetch("/api", options).then(response => {
       if (response.status === 200) {
-        responsesStatus.innerHTML = "Successfully sent data";
+        responsesStatus.innerHTML = "Successfully sent data",
+        last_commit.time = timeStamp,
+        last_commit.lat = lat,
+        last_commit.lon = lon
       } else {
         responsesStatus.innerHTML = "Could not send data to server!";
       }
     });
   } else {
     responsesStatus.innerHTML =
-      "Did not send data. You do not appear to be inside the area";
-      // or no change to position or timer not reached 
+    "Did not send data. No position change or timer not exceeded";
   }
 }
 
@@ -210,4 +216,6 @@ options = {
 
 id = navigator.geolocation.watchPosition(success, error, options);
 
-setInterval(read_vars, 5000);
+var uploadTimeMax = 60 //sec
+var uploadTimeMin = 5 //sec
+setInterval(read_vars, uploadTimeMin * 1000);

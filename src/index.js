@@ -40,32 +40,39 @@ app.post("/api", (request, response) => {
 // Express middleware used for caching.
 // If the request comes in before the cacheResetTimer, the response will be send from the cache.
 // If there is no cache yet or the request comes later than the cacheResetTimer, the response is send from the Database and the cache is reset.
-const midWare = (request, response, next) => {
-  const d = new Date();
-  const timeNow = Math.round(d.getTime() / 1000);
-  const key = timeNow - cache.lastDBRead;
-  if (key < cacheResetTimer && cache.data) {
-    response.send(cache.data);
-  } else {
-    cache["data"] = [];
-    cache["lastDBRead"] = timeNow;
-    db.collection("audioPos")
-      .where("level", ">=", 1)
-      .get()
-      .then(function(querySnapshot) {
-        querySnapshot.forEach(function(doc) {
-          cache.data.push(doc.data());
-        });
-        response.json(cache.data);
-      })
-      .catch(function(error) {
-        console.log("Error getting documents: ", error);
-      });
-  }
-  next();
-};
 
-app.get("/api/read", midWare, (request, response) => {});
+// const midWare = (request, response, next) => {
+//   const d = new Date();
+//   const timeNow = Math.round(d.getTime() / 1000);
+//   const key = timeNow - cache.lastDBRead;
+//   if (key < cacheResetTimer && cache.data) {
+//     response.send(cache.data);
+//   } else {
+//     cache["data"] = [];
+//     cache["lastDBRead"] = timeNow;
+//     db.collection("audioPos")
+//       .where("level", ">=", 1)
+//       .get()
+//       .then(function(querySnapshot) {
+//         querySnapshot.forEach(function(doc) {
+//           cache.data.push(doc.data());
+//         });
+//         response.json(cache.data);
+//       })
+//       .catch(function(error) {
+//         console.log("Error getting documents: ", error);
+//       });
+//   }
+//   next();
+// };
+
+// app.get("/api/read", midWare, (request, response) => {});
+
+app.get('/api/read', (request, response) => {
+
+  var rows = pgdb.select(response);
+
+})
 
 // use reload on local machine and https on production environment
 
