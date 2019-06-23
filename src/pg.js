@@ -1,11 +1,11 @@
 const { Pool, Client } = require('pg')
 
 const pool = new Pool({
-    user: 'audiomap',
-    host: '51.15.91.161',
-    database: 'audiomap',
-    password: '#@bhNYzijU',
-    port: 5433,
+    user: process.env.PG_HOST,
+    host: process.env.PG_HOST,
+    database: process.env.PG_DATABASE,
+    password: process.env.PG_USER,
+    port: process.env.PG_PASSWORD,
 })
 
 function pg_select (response) {
