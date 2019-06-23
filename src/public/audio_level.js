@@ -45,7 +45,7 @@ async function getData() {
   const data = await response.json();
   data.map(audioPoint => {
     audioLocations.push(
-      turf.point([audioPoint.lon, audioPoint.lat], { level: audioPoint.level })
+      turf.point([audioPoint.lon, audioPoint.lat], { level: audioPoint.level_mean })
     );
   });
   let points = await turf.featureCollection(audioLocations);

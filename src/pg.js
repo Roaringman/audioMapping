@@ -16,7 +16,7 @@ function pg_select (response) {
 };
 
 function pg_insert (level, lat, lon, timeStamp) {
-    const text = 'insert into rf.audiopos (level, lat, lon, client_time_unix, client_time) VALUES ($1, $2, $3, $4, to_timestamp( $4 ));'
+    const text = 'insert into rf.audiopos (level, lat, lon, client_time_unix, client_time) VALUES ($1, $2, $3, $4::int, to_timestamp( $4 ));'
     const values = [level, lat, lon, timeStamp]
     pool.query(text, values)
     .then(res => console.log('insert response:', res)
