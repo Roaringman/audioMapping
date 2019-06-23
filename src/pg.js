@@ -9,7 +9,7 @@ const pool = new Pool({
 })
 
 function pg_select (response) {
-    pool.query('SELECT * FROM rf.audiopos')
+    pool.query('SELECT * FROM rf.v_audiopos_lov_res_24h')
     .then(res => {console.log('rows:', res.rows), response.json(res.rows)}
     )
     .catch(e => setImmediate(() => { throw e }))
