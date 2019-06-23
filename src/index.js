@@ -1,6 +1,6 @@
-const dotenv = require('dotenv').config()
-const pgdb = require('./pg.js')
-const DBimport = require("./FireDB.js");
+const dotenv = require("dotenv").config();
+const pgdb = require("./pg.js");
+//const DBimport = require("./FireDB.js");
 const express = require("express");
 const path = require("path");
 const reload = require("reload");
@@ -31,7 +31,7 @@ app.post("/api", (request, response) => {
 
   const { timeStamp, level, lat, lon } = data;
 
-  pgdb.insert(level, lat, lon, timeStamp)
+  pgdb.insert(level, lat, lon, timeStamp);
 
   response.json = { status: "Success" };
   response.end();
@@ -68,11 +68,9 @@ app.post("/api", (request, response) => {
 
 // app.get("/api/read", midWare, (request, response) => {});
 
-app.get('/api/read', (request, response) => {
-
+app.get("/api/read", (request, response) => {
   var rows = pgdb.select(response);
-
-})
+});
 
 // use reload on local machine and https on production environment
 

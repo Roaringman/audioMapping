@@ -8,9 +8,87 @@
   "short_name": "Audio level v0.",
   "theme_color": "purple",
   "description": "Mapping the sounds we make",
-  "orientation": "any",
-  "background_color": "transparent",
-  "related_applications": [],
-  "prefer_related_applications": false,
-  "icons": []
+  "orientation": "landscape",
+  "background_color": "#000000",
+  "related_applications": "",
+  "prefer_related_applications": "false",
+  "generated": "undefined",
+  "icons": [
+    {
+      "src": "./assets/Logo.png",
+      "sizes": "44x44"
+    },
+    {
+      "src": "./assets/Logo.png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "./assets/Logo.png",
+      "sizes": "1240x600"
+    },
+    {
+      "src": "./assets/Logo.png",
+      "sizes": "300x300"
+    },
+    {
+      "src": "./assets/Logo.png",
+      "sizes": "150x150"
+    },
+    {
+      "src": "./assets/Logo.png",
+      "sizes": "88x88"
+    },
+    {
+      "src": "./assets/Logo.png",
+      "sizes": "24x24"
+    },
+    {
+      "src": "./assets/Logo.png",
+      "sizes": "50x50"
+    },
+    {
+      "src": "./assets/Logo.png",
+      "sizes": "620x300"
+    },
+    {
+      "src": "./assets/Logo.png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "./assets/Logo.png",
+      "sizes": "144x144"
+    },
+    {
+      "src": "./assets/Logo.png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "./assets/Logo.png",
+      "sizes": "72x72"
+    },
+    {
+      "src": "./assets/Logo.png",
+      "sizes": "36x36"
+    },
+    {
+      "src": "https://lydsans.com:3000/ios/ios-appicon-1024-1024.png",
+      "sizes": "1024x1024"
+    },
+    {
+      "src": "./assets/Logo.png",
+      "sizes": "180x180"
+    },
+    {
+      "src": "./assets/Logo.png",
+      "sizes": "152x152"
+    },
+    {
+      "src": "./assets/Logo.png",
+      "sizes": "120x120"
+    },
+    {
+      "src": "./assets/Logo.png",
+      "sizes": "76x76"
+    }
+  ]
 }

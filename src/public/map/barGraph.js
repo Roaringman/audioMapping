@@ -4,6 +4,7 @@ const w = 200;
 let count = 0;
 
 function bins(data) {
+  d3.select("#barGraph").html("");
   data.features.forEach(feature => {
     let index;
     if (typeof feature.properties.soundLevel != "number") {
