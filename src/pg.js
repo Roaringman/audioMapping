@@ -16,7 +16,7 @@ function pg_select (response) {
     .catch(e => setImmediate(() => { throw e }))
 };
 
-function pg_insert (level, lat, lon, timeStamp) {
+function pg_insert_levelPos (level, lat, lon, timeStamp) {
     const text = 'insert into rf.audiopos (level, lat, lon, client_time_unix, client_time) VALUES ($1, $2, $3, $4::int, to_timestamp( $4 ));'
     const values = [level, lat, lon, timeStamp]
     pool.query(text, values)
@@ -25,9 +25,19 @@ function pg_insert (level, lat, lon, timeStamp) {
     .catch(e => setImmediate(() => { throw e }))
 };
 
+function pg_insert_calibration (sessionid, ratio, calibration_device) {
+    const text = 'insert into rf.calibration (sessionid, ratio, calibration_device) VALUES ($1, $2, $3);'
+    const values = [sessionid, ratio, calibration_device]
+    pool.query(text, values)
+    .then(res => console.log('insert response:', res)
+    )
+    .catch(e => setImmediate(() => { throw e }))
+};
+
 var obj = {
     select : pg_select,
-    insert : pg_insert
+    insert_levelPos : pg_insert_levelPos,
+    insert_calibration : pg_insert_calibration,
 };
 
 module.exports = obj;

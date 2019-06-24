@@ -114,12 +114,34 @@ function tick() {
   )}`.toString();
 }
 
+function postCalibration(options){
+  fetch("/api/post/calibration", options).then(response => {
+    if (response.status === 200) {
+      (responsesStatus.innerHTML = "Successfully sent data");
+    } else {
+      responsesStatus.innerHTML = "Could not send data to server!";
+    }
+  });
+};
+
+function postLevelPos(options){
+  fetch("/api/post/levelPos", options).then(response => {
+    if (response.status === 200) {
+      (responsesStatus.innerHTML = "Successfully sent data"),
+        (last_commit.time = timeStamp),
+        (last_commit.lat = lat),
+        (last_commit.lon = lon);
+    } else {
+      responsesStatus.innerHTML = "Could not send data to server!";
+    }
+  });
+};
+
 function read_vars() {
-  // TODO: devide in a read function and a fecth function
 
   // let average = array => array.reduce((a, b) => a + b) / array.length;
   var d = new Date();
-  var frontnow = Math.round(d.getTime() / 1000); //TODO: local time zone instead of UTC
+  var frontnow = Math.round(d.getTime() / 1000); //UTC
 
   const level = audio_average;
   const lat = gps_block.latitude;
@@ -140,6 +162,7 @@ function read_vars() {
     last_commit.lat != lat ||
     last_commit.lon != lon
   ) {
+
     const options = {
       method: "POST",
       headers: {
@@ -147,16 +170,9 @@ function read_vars() {
       },
       body: JSON.stringify(data),
     };
-    fetch("/api", options).then(response => {
-      if (response.status === 200) {
-        (responsesStatus.innerHTML = "Successfully sent data"),
-          (last_commit.time = timeStamp),
-          (last_commit.lat = lat),
-          (last_commit.lon = lon);
-      } else {
-        responsesStatus.innerHTML = "Could not send data to server!";
-      }
-    });
+
+    postLevelPos(options);
+    
   } else {
     responsesStatus.innerHTML =
       "Did not send data. No position change or timer not exceeded";

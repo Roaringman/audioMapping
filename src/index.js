@@ -24,14 +24,27 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname + "/public/app.html"));
 });
 
-app.post("/api", (request, response) => {
+app.post("/api/post/levelPos", (request, response) => {
   const data = request.body;
   const d = new Date();
-  const serverNow = Math.round(d.getTime() / 1000); //TODO: add to db + local time zone instead of UTC
+  // const serverNow = Math.round(d.getTime() / 1000); //TODO: add to db + local time zone instead of UTC
 
   const { timeStamp, level, lat, lon } = data;
 
-  pgdb.insert(level, lat, lon, timeStamp);
+  pgdb.insert_levelPos(level, lat, lon, timeStamp);
+
+  response.json = { status: "Success" };
+  response.end();
+});
+
+app.post("/api/post/calibration", (request, response) => {
+  const data = request.body;
+  const d = new Date();
+  // const serverNow = Math.round(d.getTime() / 1000); //TODO: add to db + local time zone instead of UTC
+
+  const { sessionid, ratio, calibration_device } = data;
+
+  pgdb.insert_calibration(sessionid, ratio, calibration_device);
 
   response.json = { status: "Success" };
   response.end();
