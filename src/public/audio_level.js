@@ -198,12 +198,8 @@ function read_vars() {
     } else {
       responsesStatus.innerHTML =
         "Did not send data. No position change or timer not exceeded";
-    }
-  } else {
-    responsesStatus.innerHTML =
-      "Did not send data. You do not appear to be inside the area";
   }
-}
+};
 
 getData(); // fetch data from database
 
