@@ -19,9 +19,9 @@ const mymap = L.map("mapid", {
 });
 L.control.attribution({ position: "bottomleft" }).addTo(mymap);
 
-//Create hex grid - Arguments are bounding box array and cell size in kilometers
 const bbox = [12.45, 55.591973, 12.663809, 55.71];
 const areaBbox = turf.bboxPolygon(bbox);
+//Create hex grid - Arguments are bounding box array and cell size in kilometers
 const hexgrid = createHexGrid(bbox, 0.2);
 const center = turf.center(hexgrid);
 const initLon = center.geometry.coordinates[0];
@@ -45,38 +45,21 @@ async function getData() {
   const data = await response.json();
   data.map(audioPoint => {
     audioLocations.push(
-      turf.point([audioPoint.lon, audioPoint.lat], { level: audioPoint.level_mean })
+      turf.point([audioPoint.lon, audioPoint.lat], {
+        level: audioPoint.level_mean,
+      })
     );
   });
   let points = await turf.featureCollection(audioLocations);
   //await displayPoints(points);
   const joined = await spatialJoin(points, hexgrid);
+  //only show the hexgrid cells containing measurements
+  const joinedFiltered = joined.features.filter(
+    hex => hex.properties.level.length > 0
+  );
+
   if (!mymap.hasLayer(hexGridLayer)) {
-    hexGridLayer.addLayer(
-      L.geoJSON(joined, {
-        style: function(feature) {
-          if (feature.properties.soundLevel > 0) {
-            return {
-              color: colorScale(feature.properties.soundLevel),
-              weight: 2,
-              opacity: 1,
-              fillOpacity: scale(feature.properties["level"].length),
-            };
-          } else {
-            return {
-              color: "d3d3d3",
-              weight: 1,
-              opacity: 1,
-              fillOpacity: 0.1,
-            };
-          }
-        },
-      }).bindPopup(function(layer) {
-        return `The average sound level here is: ${
-          layer.feature.properties.soundLevel
-        } based on ${layer.feature.properties.level.length} observations`;
-      })
-    );
+    addHexgridLayer(joinedFiltered);
     hexGridLayer.addTo(mymap);
   } else {
     mymap.removeLayer(hexGridLayer);
@@ -154,14 +137,14 @@ function collectCalibrationData(){
 function postCalibration(options){
   fetch("/api/post/calibration", options).then(response => {
     if (response.status === 200) {
-      (responsesStatus.innerHTML = "Successfully sent data");
+      responsesStatus.innerHTML = "Successfully sent data";
     } else {
       responsesStatus.innerHTML = "Could not send data to server!";
     }
   }).catch(error => console.error(error));
 };
 
-function postLevelPos(options){
+function postLevelPos(options) {
   fetch("/api/post/levelPos", options).then(response => {
     if (response.status === 200) {
       (responsesStatus.innerHTML = "Successfully sent data"),
@@ -172,7 +155,7 @@ function postLevelPos(options){
       responsesStatus.innerHTML = "Could not send data to server!";
     }
   });
-};
+}
 
 function createOptions(data){
   const options = {
@@ -186,7 +169,11 @@ function createOptions(data){
 }
 
 function read_vars() {
+<<<<<<< HEAD
 
+=======
+  // let average = array => array.reduce((a, b) => a + b) / array.length;
+>>>>>>> 109daaa60e72e63f06e51d182da6938b84ccbfb6
   var d = new Date();
   var frontnow = Math.round(d.getTime() / 1000); //UTC
 
@@ -199,6 +186,7 @@ function read_vars() {
 
   let currentLocation = turf.point([lon, lat]);
 
+<<<<<<< HEAD
   //Check if user is inside the grid and only posts if that is the case
   if (!turf.booleanPointInPolygon(currentLocation, areaBbox)) {
     responsesStatus.innerHTML =
@@ -211,12 +199,31 @@ function read_vars() {
   ) {
 
     const options = createOptions(data)
+=======
+  //Check if user is inside the grid and only post if that is the case
+  if (turf.booleanPointInPolygon(currentLocation, areaBbox)) {
+    if (
+      last_commit.time + 60 < timeStamp ||
+      last_commit.lat != lat ||
+      last_commit.lon != lon
+    ) {
+      const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      };
+>>>>>>> 109daaa60e72e63f06e51d182da6938b84ccbfb6
 
-    postLevelPos(options);
-    
+      postLevelPos(options);
+    } else {
+      responsesStatus.innerHTML =
+        "Did not send data. No position change or timer not exceeded";
+    }
   } else {
     responsesStatus.innerHTML =
-      "Did not send data. No position change or timer not exceeded";
+      "Did not send data. You do not appear to be inside the area";
   }
 }
 
