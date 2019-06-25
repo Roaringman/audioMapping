@@ -69,4 +69,32 @@ function spatialJoin(points, polygons) {
   return collected;
 }
 
+function addHexgridLayer(joinedPointPolyData) {
+  hexGridLayer.addLayer(
+    L.geoJSON(joinedPointPolyData, {
+      style: function(feature) {
+        if (feature.properties.soundLevel > 0) {
+          return {
+            color: colorScale(feature.properties.soundLevel),
+            weight: 2,
+            opacity: 1,
+            fillOpacity: scale(feature.properties["level"].length),
+          };
+        } else {
+          return {
+            color: "d3d3d3",
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.1,
+          };
+        }
+      },
+    }).bindPopup(function(layer) {
+      return `The average sound level here is: ${
+        layer.feature.properties.soundLevel
+      } based on ${layer.feature.properties.level.length} observations`;
+    })
+  );
+}
+
 const colorScale = d3.scaleSequential(d3.interpolateWarm).domain([0, 100]);
