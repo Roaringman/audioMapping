@@ -114,6 +114,43 @@ function tick() {
   )}`.toString();
 }
 
+function collectCalibrationData(){
+
+  let key_input = document.getElementById("key_input");
+
+  let audio_collection = [];
+  let x = 10;
+
+  function setTimer(callback){
+    for (var i = 0; i < x; i++){
+      setTimeout(callback, 500 * i)
+    }
+  }
+
+  setTimer(function(){
+
+    audio_collection.push(audio_average)
+
+    if (audio_collection.length >= x){
+
+      let average = array => array.reduce((a, b) => a + b) / array.length;
+
+      console.log('collection_avg:', average(audio_collection))
+
+      const data = {
+        sessionid : Math.floor(Math.random() * 100000), // TODO change to danymic
+        level : average(audio_collection),
+        key : key_input.value }
+
+        const options = createOptions(data)
+
+      postCalibration(options)
+
+    }
+  })
+}
+  
+
 function postCalibration(options){
   fetch("/api/post/calibration", options).then(response => {
     if (response.status === 200) {
@@ -121,25 +158,35 @@ function postCalibration(options){
     } else {
       responsesStatus.innerHTML = "Could not send data to server!";
     }
-  });
+  }).catch(error => console.error(error));
 };
 
 function postLevelPos(options){
   fetch("/api/post/levelPos", options).then(response => {
     if (response.status === 200) {
       (responsesStatus.innerHTML = "Successfully sent data"),
-        (last_commit.time = timeStamp),
-        (last_commit.lat = lat),
-        (last_commit.lon = lon);
+        (last_commit.time = options.body.time),
+        (last_commit.lat = options.body.lat),
+        (last_commit.lon = options.body.lon);
     } else {
       responsesStatus.innerHTML = "Could not send data to server!";
     }
   });
 };
 
+function createOptions(data){
+  const options = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  };
+  return options
+}
+
 function read_vars() {
 
-  // let average = array => array.reduce((a, b) => a + b) / array.length;
   var d = new Date();
   var frontnow = Math.round(d.getTime() / 1000); //UTC
 
@@ -163,13 +210,7 @@ function read_vars() {
     last_commit.lon != lon
   ) {
 
-    const options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    };
+    const options = createOptions(data)
 
     postLevelPos(options);
     
@@ -188,7 +229,7 @@ navigator.mediaDevices
     audioContext = new AudioContext();
     analyser = audioContext.createAnalyser();
     microphone = audioContext.createMediaStreamSource(stream);
-    javascriptNode = audioContext.createScriptProcessor(2048, 1, 1);
+    javascriptNode = audioContext.createScriptProcessor(4096, 1, 1);
 
     analyser.smoothingTimeConstant = 0.8;
     analyser.fftSize = 1024;
