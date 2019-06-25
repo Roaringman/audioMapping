@@ -169,11 +169,6 @@ function createOptions(data){
 }
 
 function read_vars() {
-<<<<<<< HEAD
-
-=======
-  // let average = array => array.reduce((a, b) => a + b) / array.length;
->>>>>>> 109daaa60e72e63f06e51d182da6938b84ccbfb6
   var d = new Date();
   var frontnow = Math.round(d.getTime() / 1000); //UTC
 
@@ -186,7 +181,6 @@ function read_vars() {
 
   let currentLocation = turf.point([lon, lat]);
 
-<<<<<<< HEAD
   //Check if user is inside the grid and only posts if that is the case
   if (!turf.booleanPointInPolygon(currentLocation, areaBbox)) {
     responsesStatus.innerHTML =
@@ -199,22 +193,6 @@ function read_vars() {
   ) {
 
     const options = createOptions(data)
-=======
-  //Check if user is inside the grid and only post if that is the case
-  if (turf.booleanPointInPolygon(currentLocation, areaBbox)) {
-    if (
-      last_commit.time + 60 < timeStamp ||
-      last_commit.lat != lat ||
-      last_commit.lon != lon
-    ) {
-      const options = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      };
->>>>>>> 109daaa60e72e63f06e51d182da6938b84ccbfb6
 
       postLevelPos(options);
     } else {
