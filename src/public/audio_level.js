@@ -263,7 +263,7 @@ function error(err) {
 }
 
 options = {
-  enableHighAccuracy: false,
+  enableHighAccuracy: true,
   timeout: 10000,
   maximumAge: 0,
 };
@@ -331,6 +331,7 @@ function checkCookie() {
        user_id = crypto.getRandomValues(new Uint32Array(1))[0].toString();
        setCookie("user_id", user_id, 30);
        console.log("id", user_id, "created and stored in cookie")
+       document.getElementById("id_input").placeholder = user_id;
   }
 }
 
