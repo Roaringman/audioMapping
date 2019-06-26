@@ -117,10 +117,13 @@ function collectCalibrationData() {
 
       console.log("collection_avg:", average(audio_collection));
 
+      const d = new Date();
+
       const data = {
-        sessionid: Math.floor(Math.random() * 100000), // TODO change to danymic
+        sessionid: document.getElementById("id_input").placeholder,
         level: average(audio_collection),
         key: key_input.value,
+        timeStamp: Math.round(d.getTime() / 1000) //UTC
       };
 
       const options = createOptions(data);
@@ -295,3 +298,40 @@ async function install() {
     });
   }
 }
+
+function setCookie(cname,cvalue,exdays) {
+  var d = new Date();
+  d.setTime(d.getTime() + (exdays*24*60*60*1000));
+  var expires = "expires=" + d.toGMTString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function getCookie(cname) {
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for(var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
+function checkCookie() {
+  var user_id = getCookie("user_id");
+  if (user_id != "") {
+    console.log("id", user_id, "found in cookie")
+    document.getElementById("id_input").placeholder = user_id;
+  } else {
+       user_id = crypto.getRandomValues(new Uint32Array(1))[0].toString();
+       setCookie("user_id", user_id, 30);
+       console.log("id", user_id, "created and stored in cookie")
+  }
+}
+
+checkCookie();

@@ -42,9 +42,9 @@ app.post("/api/post/calibration", (request, response) => {
   const d = new Date();
   // const serverNow = Math.round(d.getTime() / 1000); //TODO: add to db + local time zone instead of UTC
 
-  const { sessionid, level, key } = data;
+  const { sessionid, level, key, timeStamp} = data;
 
-  pgdb.insert_calibration(sessionid, level, key);
+  pgdb.insert_calibration(sessionid, level, key, timeStamp);
 
   response.json = { status: "Success" };
   response.end();
