@@ -104,8 +104,6 @@ const colorScale = d3.scaleSequential(d3.interpolateWarm).domain([0, 100]);
 
 const userIcon = L.divIcon({
   iconSize: [20, 20],
-  iconAnchor: [10, 10],
-  popupAnchor: [10, 0],
   shadowSize: [0, 0],
   className: "animated-icon user-icon",
 });
