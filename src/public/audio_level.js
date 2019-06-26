@@ -198,7 +198,11 @@ function read_vars() {
         units: "kilometers",
       };
 
-      circle = L.circle(userCenter.geometry.coordinates.reverse(), {
+      if (this.userCircle != null) {
+        mymap.removeLayer(this.userCircle);
+      }
+
+      userCircle = L.circle(userCenter.geometry.coordinates.reverse(), {
         color: "red",
         fillColor: "#f03",
         fillOpacity: 1,
