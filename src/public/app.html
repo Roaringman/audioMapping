@@ -1,89 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
-  <html>
-    <head>
-      <meta charset="utf-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-      <title>Audio level v0.2</title>
-      <link
-        href="https://fonts.googleapis.com/css?family=Raleway&display=swap"
-        rel="stylesheet"
-      />
-      <link rel="stylesheet" href="./css/reset.css" />
+<html>
 
-      <link rel="stylesheet" href="./css/style.css" />
-      <link
-        rel="stylesheet"
-        href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
-        integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
-        crossorigin=""
-      />
-      <script src="./pwabuilder-sw-register.js"></script>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+  <title>Audio level v0.2</title>
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/reset.css" />
 
-      <script
-        src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
-        integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
-        crossorigin=""
-      ></script>
+  <link rel="stylesheet" href="./css/style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+    crossorigin="" />
+  <script src="./pwabuilder-sw-register.js"></script>
 
-      <script src="https://npmcdn.com/@turf/turf/turf.min.js"></script>
-      <script src="https://d3js.org/d3.v5.min.js"></script>
-      <link rel="manifest" href="/manifest.json" />
-    </head>
+  <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+    integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+    crossorigin=""></script>
 
-    <body>
-      <div class="infoContainer">
-        <div class="textInfo">
-          <h1 id="responseStatus"></h1>
-          <h1>Audio level readings</h1>
-          <p id="audio_level">No readings</p>
-          <h1>GPS</h1>
-          <h2>position</h2>
-          <p id="position">No readings</p>
-          <h2>accuracy</h2>
-          <p id="accuracy">No readings</p>
-          <h2>timestamp</h2>
-          <p id="timestamp">No readings</p>
+  <script src="https://npmcdn.com/@turf/turf/turf.min.js"></script>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <link rel="manifest" href="/manifest.json" />
+</head>
 
-          <label for="timeToReload">Set time to next data load: </label>
-          <div class="slidecontainer">
-            <section>
-              <input
-                type="range"
-                min="1"
-                max="10"
-                value="10"
-                class="slider"
-                id="timeToReload"
-                onchange="updateSlider(this.value)"
-              />
-              <figcaption>
-                Reloading map data in: <span id="reloadTimer"></span>
-              </figcaption>
-            </section>
-            <button onClick="loadData()">Refresh Data</button>
-          </div>
-          <button onclick="install()">
-            Install App
-          </button>
-        </div>
+<body>
+  <div class="infoContainer">
+    <div class="textInfo">
+      <h1 id="responseStatus"></h1>
+      <h1>Audio level readings</h1>
+      <p id="audio_level">No readings</p>
+      <h1>GPS</h1>
+      <h2>position</h2>
+      <p id="position">No readings</p>
+      <h2>accuracy</h2>
+      <p id="accuracy">No readings</p>
+      <h2>timestamp</h2>
+      <p id="timestamp">No readings</p>
 
-        <div class="graphInfo" id="barGraph"></div>
+      <label for="timeToReload">Set time to next data load: </label>
+      <div class="slidecontainer">
+        <section>
+          <input type="range" min="1" max="10" value="10" class="slider" id="timeToReload"
+            onchange="updateSlider(this.value)" />
+          <figcaption>
+            Reloading map data in: <span id="reloadTimer"></span>
+          </figcaption>
+        </section>
+        <button onClick="loadData()">Refresh Data</button>
       </div>
+      <button onclick="install()">
+        Install App
+      </button>
 
-      <div id="mapid"></div>
-    </body>
-    <script>
-      if (!window.MediaRecorder) {
-        document.write(
-          decodeURI('%3Cscript defer src="polyfill.js">%3C/script>')
-        );
-      }
-    </script>
+      <h2><br>Calibration</h2>
 
-    <script src="./map/map.js"></script>
-    <script src="audio_level.js"></script>
-    <script src="./map/barGraph.js"></script>
-  </html>
+      <p>Share a key with another device and hit record at the same time.</p>
+      
+        Key:<br>
+        <input id="key_input" type="text" name="calibrationkey" placeholder="uniq key">
+        <br>Session id:<br>
+        <input type="text" name="lastname" value="sessionid goes here" disabled>
+        <br><br>
+        <button onClick="collectCalibrationData()">Record</button>
+      
+
+    </div>
+
+    <div class="graphInfo" id="barGraph"></div>
+  </div>
+
+  <div id="mapid"></div>
+</body>
+<script>
+  if (!window.MediaRecorder) {
+    document.write(
+      decodeURI('%3Cscript defer src="polyfill.js">%3C/script>')
+    );
+  }
+</script>
+
+<script src="./map/map.js"></script>
+<script src="audio_level.js"></script>
+<script src="./map/barGraph.js"></script>
+
+</html>
+
 </html>

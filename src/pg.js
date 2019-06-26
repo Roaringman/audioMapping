@@ -25,9 +25,9 @@ function pg_insert_levelPos (level, lat, lon, timeStamp) {
     .catch(e => setImmediate(() => { throw e }))
 };
 
-function pg_insert_calibration (sessionid, ratio, calibration_device) {
-    const text = 'insert into rf.calibration (sessionid, ratio, calibration_device) VALUES ($1, $2, $3);'
-    const values = [sessionid, ratio, calibration_device]
+function pg_insert_calibration (sessionid, level, key) {
+    const text = 'insert into rf.calibration (sessionid, level, key) VALUES ($1, $2, $3);'
+    const values = [sessionid, level, key]
     pool.query(text, values)
     .then(res => console.log('insert response:', res)
     )
