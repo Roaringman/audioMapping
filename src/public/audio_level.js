@@ -97,52 +97,50 @@ function tick() {
   )}`.toString();
 }
 
-function collectCalibrationData(){
-
+function collectCalibrationData() {
   let key_input = document.getElementById("key_input");
 
   let audio_collection = [];
   let x = 10;
 
-  function setTimer(callback){
-    for (var i = 0; i < x; i++){
-      setTimeout(callback, 500 * i)
+  function setTimer(callback) {
+    for (var i = 0; i < x; i++) {
+      setTimeout(callback, 500 * i);
     }
   }
 
-  setTimer(function(){
+  setTimer(function() {
+    audio_collection.push(audio_average);
 
-    audio_collection.push(audio_average)
-
-    if (audio_collection.length >= x){
-
+    if (audio_collection.length >= x) {
       let average = array => array.reduce((a, b) => a + b) / array.length;
 
-      console.log('collection_avg:', average(audio_collection))
+      console.log("collection_avg:", average(audio_collection));
 
       const data = {
-        sessionid : Math.floor(Math.random() * 100000), // TODO change to danymic
-        level : average(audio_collection),
-        key : key_input.value }
+        sessionid: Math.floor(Math.random() * 100000), // TODO change to danymic
+        level: average(audio_collection),
+        key: key_input.value,
+      };
 
-        const options = createOptions(data)
+      const options = createOptions(data);
 
-      postCalibration(options)
-
+      postCalibration(options);
     }
-  })
+  });
 }
-  
 
-function postCalibration(options){
-  fetch("/api/post/calibration", options).then(response => {
-    if (response.status === 200) {
-      responsesStatus.innerHTML = "Successfully sent data";
-    } else {
-      responsesStatus.innerHTML = "Could not send data to server!";
-    }
-  }).catch(error => console.error(error));
-};
+function postCalibration(options) {
+  fetch("/api/post/calibration", options)
+    .then(response => {
+      if (response.status === 200) {
+        responsesStatus.innerHTML = "Successfully sent data";
+      } else {
+        responsesStatus.innerHTML = "Could not send data to server!";
+      }
+    })
+    .catch(error => console.error(error));
+}
 
 function postLevelPos(options) {
   fetch("/api/post/levelPos", options).then(response => {
@@ -157,7 +155,7 @@ function postLevelPos(options) {
   });
 }
 
-function createOptions(data){
+function createOptions(data) {
   const options = {
     method: "POST",
     headers: {
@@ -165,7 +163,7 @@ function createOptions(data){
     },
     body: JSON.stringify(data),
   };
-  return options
+  return options;
 }
 
 function read_vars() {
@@ -182,17 +180,13 @@ function read_vars() {
   let currentLocation = turf.point([lon, lat]);
 
   //Check if user is inside the grid and only posts if that is the case
-  if (!turf.booleanPointInPolygon(currentLocation, areaBbox)) {
-    responsesStatus.innerHTML =
-      "Did not send data. You do not appear to be inside the area";
-  }
-  if (
-    last_commit.time + 60 < timeStamp ||
-    last_commit.lat != lat ||
-    last_commit.lon != lon
-  ) {
-
-    const options = createOptions(data)
+  if (turf.booleanPointInPolygon(currentLocation, areaBbox)) {
+    if (
+      last_commit.time + 60 < timeStamp ||
+      last_commit.lat != lat ||
+      last_commit.lon != lon
+    ) {
+      const options = createOptions(data);
 
       postLevelPos(options);
       const currentGrid = hexgrid.features.filter(currentGrid =>
@@ -203,8 +197,12 @@ function read_vars() {
     } else {
       responsesStatus.innerHTML =
         "Did not send data. No position change or timer not exceeded";
+    }
+  } else {
+    responsesStatus.innerHTML =
+      "Did not send data. You do not appear to be inside the area";
   }
-};
+}
 
 getData(); // fetch data from database
 
