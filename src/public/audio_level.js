@@ -192,8 +192,19 @@ function read_vars() {
       const currentGrid = hexgrid.features.filter(currentGrid =>
         turf.booleanPointInPolygon(currentLocation, currentGrid)
       );
-      const center = turf.centerOfMass(currentGrid[0]);
-      console.log(center);
+      const userCenter = turf.centerOfMass(currentGrid[0]);
+      const userOptions = {
+        steps: 10,
+        units: "kilometers",
+      };
+
+      circle = L.circle(userCenter.geometry.coordinates.reverse(), {
+        color: "red",
+        fillColor: "#f03",
+        fillOpacity: 1,
+        units: "kilometers",
+        radius: 0.1,
+      }).addTo(mymap);
     } else {
       responsesStatus.innerHTML =
         "Did not send data. No position change or timer not exceeded";
