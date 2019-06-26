@@ -70,6 +70,9 @@ function spatialJoin(points, polygons) {
 }
 
 function addHexgridLayer(joinedPointPolyData) {
+  if (this.hexGridLayer != null) {
+    mymap.removeLayer(this.hexGridLayer);
+  }
   hexGridLayer.addLayer(
     L.geoJSON(joinedPointPolyData, {
       style: function(feature) {
