@@ -150,6 +150,11 @@ function read_vars() {
       };
 
       postLevelPos(options);
+      const currentGrid = hexgrid.features.filter(currentGrid =>
+        turf.booleanPointInPolygon(currentLocation, currentGrid)
+      );
+      const center = turf.centerOfMass(currentGrid[0]);
+      console.log(center);
     } else {
       responsesStatus.innerHTML =
         "Did not send data. No position change or timer not exceeded";
