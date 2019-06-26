@@ -167,20 +167,17 @@ function createOptions(data) {
 }
 
 function read_vars() {
-  var d = new Date();
-  var frontnow = Math.round(d.getTime() / 1000); //UTC
-
-  const level = audio_average;
   const lat = gps_block.latitude;
   const lon = gps_block.longitude;
-  const timeStamp = frontnow;
-
-  const data = { level, lat, lon, timeStamp };
-
   let currentLocation = turf.point([lon, lat]);
-
   //Check if user is inside the grid and only posts if that is the case
   if (turf.booleanPointInPolygon(currentLocation, areaBbox)) {
+    const d = new Date();
+    const frontnow = Math.round(d.getTime() / 1000); //UTC
+    const timeStamp = frontnow;
+    const level = audio_average;
+    const data = { level, lat, lon, timeStamp };
+
     if (
       last_commit.time + 60 < timeStamp ||
       last_commit.lat != lat ||
@@ -198,17 +195,7 @@ function read_vars() {
         units: "kilometers",
       };
 
-      if (this.userCircle != null) {
-        mymap.removeLayer(this.userCircle);
-      }
-
-      userCircle = L.circle(userCenter.geometry.coordinates.reverse(), {
-        color: "red",
-        fillColor: "#f03",
-        fillOpacity: 1,
-        units: "kilometers",
-        radius: 0.1,
-      }).addTo(mymap);
+      showUserPosition(userCenter.geometry.coordinates.reverse());
     } else {
       responsesStatus.innerHTML =
         "Did not send data. No position change or timer not exceeded";

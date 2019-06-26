@@ -23,6 +23,7 @@ html {
 
 .infoContainer {
   position: absolute;
+  overflow: scroll;
   z-index: 1;
   pointer-events: auto;
   padding: 2vw 2vw -2vw 2vw;
@@ -41,4 +42,13 @@ html {
 
 .graphInfo {
   padding: 2vw;
+}
+
+.animated-icon {
+  width: 20px;
+  height: 20px;
+  background-color: rgba(247, 170, 4, 0.8);
+  border-radius: 50%;
+  box-shadow: 0px 0px 4px white;
+  transition: all 1s;
 }
