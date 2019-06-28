@@ -16,9 +16,9 @@ function pg_select (response) {
     .catch(e => setImmediate(() => { throw e }))
 };
 
-function pg_insert_levelPos (level, lat, lon, timeStamp) {
-    const text = 'insert into rf.audiopos (level, lat, lon, client_time_unix, client_time) VALUES ($1, $2, $3, $4::int, to_timestamp( $4 ));'
-    const values = [level, lat, lon, timeStamp]
+function pg_insert_levelPos (level, lat, lon, timeStamp, sessionid) {
+    const text = 'insert into rf.audiopos (level, lat, lon, client_time_unix, client_time, sessionid) VALUES ($1, $2, $3, $4::int, to_timestamp( $4 ), $5);'
+    const values = [level, lat, lon, timeStamp, sessionid]
     pool.query(text, values)
     .then(res => console.log('insert response:', res)
     )

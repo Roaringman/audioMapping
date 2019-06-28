@@ -29,9 +29,9 @@ app.post("/api/post/levelPos", (request, response) => {
   const d = new Date();
   // const serverNow = Math.round(d.getTime() / 1000); //TODO: add to db + local time zone instead of UTC
 
-  const { timeStamp, level, lat, lon } = data;
+  const { level, lat, lon, timeStamp, sessionid } = data;
 
-  pgdb.insert_levelPos(level, lat, lon, timeStamp);
+  pgdb.insert_levelPos(level, lat, lon, timeStamp, sessionid);
 
   response.json = { status: "Success" };
   response.end();

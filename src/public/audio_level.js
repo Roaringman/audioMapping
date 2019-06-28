@@ -179,10 +179,11 @@ function read_vars() {
     const frontnow = Math.round(d.getTime() / 1000); //UTC
     const timeStamp = frontnow;
     const level = audio_average;
-    const data = { level, lat, lon, timeStamp };
+    const sessionid = getCookie("user_id");
+    const data = { level, lat, lon, timeStamp, sessionid};
 
     if (
-      last_commit.time + 60 < timeStamp ||
+      last_commit.time + 60 * 10 < timeStamp || // wait 60 * 10 = 10 min
       last_commit.lat != lat ||
       last_commit.lon != lon
     ) {
