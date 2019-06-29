@@ -32,7 +32,7 @@ const initLon = center.geometry.coordinates[0];
 const initLat = center.geometry.coordinates[1];
 
 //Initialize map - Arguments are lat, lon and zoom level.
-buildMap(initLat, initLon, 11);
+buildMap(initLat, initLon, 14);
 
 const hexGridLayer = new L.LayerGroup();
 const circleLayer = new L.LayerGroup();
@@ -44,7 +44,7 @@ let scale = d3
   .range([0.1, 0.9]);
 
 async function getData() {
-  const audioLocations = [];
+  let audioLocations = [];
 
   const response = await fetch("/api/read");
   const data = await response.json();
@@ -57,20 +57,17 @@ async function getData() {
   });
   let points = await turf.featureCollection(audioLocations);
   //await displayPoints(points);
-  const joined = await spatialJoin(points, hexgrid);
+  let joined = await spatialJoin(points, hexgrid);
   //only show the hexgrid cells containing measurements
   const joinedFiltered = joined.features.filter(
     hex => hex.properties.level.length > 0
   );
+  addHexgridLayer(joinedFiltered).addTo(mymap);
 
-  if (!mymap.hasLayer(hexGridLayer)) {
-    addHexgridLayer(joinedFiltered);
-    hexGridLayer.addTo(mymap);
-  } else {
-    mymap.removeLayer(hexGridLayer);
-    hexGridLayer.addTo(mymap);
-  }
+  joined = {};
   //bins(joined);
+  audioLocations = [];
+  point = [];
 }
 
 let time = sliderTime * 60;
@@ -128,7 +125,7 @@ function collectCalibrationData() {
         sessionid: document.getElementById("id_input").placeholder,
         level: average(audio_collection),
         key: key_input.value,
-        timeStamp: Math.round(d.getTime() / 1000) //UTC
+        timeStamp: Math.round(d.getTime() / 1000), //UTC
       };
 
       const options = createOptions(data);
@@ -185,7 +182,7 @@ function read_vars() {
     const timeStamp = frontnow;
     const level = audio_average;
     const sessionid = getCookie("user_id");
-    const data = { level, lat, lon, timeStamp, sessionid};
+    const data = { level, lat, lon, timeStamp, sessionid };
 
     if (
       last_commit.time + 60 * 10 < timeStamp || // wait 60 * 10 = 10 min
@@ -305,9 +302,9 @@ async function install() {
   }
 }
 
-function setCookie(cname,cvalue,exdays) {
+function setCookie(cname, cvalue, exdays) {
   var d = new Date();
-  d.setTime(d.getTime() + (exdays*24*60*60*1000));
+  d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
   var expires = "expires=" + d.toGMTString();
   document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
@@ -315,10 +312,10 @@ function setCookie(cname,cvalue,exdays) {
 function getCookie(cname) {
   var name = cname + "=";
   var decodedCookie = decodeURIComponent(document.cookie);
-  var ca = decodedCookie.split(';');
-  for(var i = 0; i < ca.length; i++) {
+  var ca = decodedCookie.split(";");
+  for (var i = 0; i < ca.length; i++) {
     var c = ca[i];
-    while (c.charAt(0) == ' ') {
+    while (c.charAt(0) == " ") {
       c = c.substring(1);
     }
     if (c.indexOf(name) == 0) {
@@ -331,13 +328,13 @@ function getCookie(cname) {
 function checkCookie() {
   var user_id = getCookie("user_id");
   if (user_id != "") {
-    console.log("id", user_id, "found in cookie")
+    console.log("id", user_id, "found in cookie");
     document.getElementById("id_input").placeholder = user_id;
   } else {
-       user_id = crypto.getRandomValues(new Uint32Array(1))[0].toString();
-       setCookie("user_id", user_id, 30);
-       console.log("id", user_id, "created and stored in cookie")
-       document.getElementById("id_input").placeholder = user_id;
+    user_id = crypto.getRandomValues(new Uint32Array(1))[0].toString();
+    setCookie("user_id", user_id, 30);
+    console.log("id", user_id, "created and stored in cookie");
+    document.getElementById("id_input").placeholder = user_id;
   }
 }
 

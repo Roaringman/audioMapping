@@ -65,25 +65,6 @@
             <button onClick="loadData()">Refresh Data</button>
           </div>
 
-          <label for="timeToReload">Set time to next data load: </label>
-          <div class="slidecontainer">
-            <section>
-              <input
-                type="range"
-                min="1"
-                max="10"
-                value="10"
-                class="slider"
-                id="timeToReload"
-                onchange="updateSlider(this.value)"
-              />
-              <figcaption>
-                Reloading map data in: <span id="reloadTimer"></span>
-              </figcaption>
-            </section>
-            <button onClick="loadData()">Refresh Data</button>
-          </div>
-
           <h2><br />Calibration</h2>
 
           <p>
@@ -103,27 +84,6 @@
             type="text"
             name="lastname"
             placeholder="sessionid goes here"
-            disabled
-          />
-          <br /><br />
-          <button onClick="collectCalibrationData()">Record</button>
-
-          <p>
-            Share a key with another device and hit record at the same time.
-          </p>
-
-          Key:<br />
-          <input
-            id="key_input"
-            type="text"
-            name="calibrationkey"
-            placeholder="uniq key"
-          />
-          <br />Session id:<br />
-          <input
-            type="text"
-            name="lastname"
-            value="sessionid goes here"
             disabled
           />
           <br /><br />

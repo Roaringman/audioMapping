@@ -11,7 +11,7 @@ function buildMap(lat, lon, zoom) {
         "pk.eyJ1IjoicmdlbmdlbGwiLCJhIjoiY2p3b3c1M21rMGtjMzQzcTk3ZnU0MGxlMyJ9.1ZMDlrrQn98G5QgQVObfRg",
     }
   ).addTo(mymap);
-  mymap.options.minZoom = 10;
+  mymap.options.minZoom = 14;
   mymap.setMaxBounds(mymap.getBounds());
 }
 
@@ -72,9 +72,11 @@ function spatialJoin(points, polygons) {
 }
 
 function addHexgridLayer(joinedPointPolyData) {
-  if (this.hexGridLayer != null) {
-    mymap.removeLayer(this.hexGridLayer);
+  if (hexGridLayer != null) {
+    mymap.removeLayer(hexGridLayer);
+    hexGridLayer.clearLayers();
   }
+
   hexGridLayer.addLayer(
     L.geoJSON(joinedPointPolyData, {
       style: function(feature) {
@@ -100,6 +102,7 @@ function addHexgridLayer(joinedPointPolyData) {
       } based on ${layer.feature.properties.level.length} observations`;
     })
   );
+  return hexGridLayer;
 }
 
 const colorScale = d3.scaleSequential(d3.interpolateWarm).domain([0, 100]);
