@@ -18,7 +18,9 @@ function buildMap(lat, lon, zoom) {
 function createHexGrid(bbox, cellsize) {
   const area = bbox;
   const cellSize = cellsize;
-  const options = { units: "kilometers" };
+  const options = {
+    units: "kilometers",
+  };
   let grid = turf.hexGrid(area, cellSize, options);
 
   const addID = function(feature, i) {

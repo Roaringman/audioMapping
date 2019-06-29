@@ -19,10 +19,14 @@ const mymap = L.map("mapid", {
 });
 L.control.attribution({ position: "bottomleft" }).addTo(mymap);
 
-const bbox = [12.45, 55.591973, 12.663809, 55.71];
+//55.628350, 12.062129
+// 55.608651, 12.110839
+
+const bbox = [12.052129, 55.608651, 12.110839, 55.62835]; //[12.45, 55.591973, 12.663809, 55.71];kbh
 const areaBbox = turf.bboxPolygon(bbox);
+
 //Create hex grid - Arguments are bounding box array and cell size in kilometers
-const hexgrid = createHexGrid(bbox, 0.2);
+const hexgrid = createHexGrid(bbox, 0.03);
 const center = turf.center(hexgrid);
 const initLon = center.geometry.coordinates[0];
 const initLat = center.geometry.coordinates[1];
@@ -32,6 +36,7 @@ buildMap(initLat, initLon, 11);
 
 const hexGridLayer = new L.LayerGroup();
 const circleLayer = new L.LayerGroup();
+const festivalArea = new L.LayerGroup();
 
 let scale = d3
   .scaleLinear()
@@ -65,7 +70,7 @@ async function getData() {
     mymap.removeLayer(hexGridLayer);
     hexGridLayer.addTo(mymap);
   }
-  bins(joined);
+  //bins(joined);
 }
 
 let time = sliderTime * 60;
