@@ -11,7 +11,7 @@ function buildMap(lat, lon, zoom) {
         "pk.eyJ1IjoicmdlbmdlbGwiLCJhIjoiY2p3b3c1M21rMGtjMzQzcTk3ZnU0MGxlMyJ9.1ZMDlrrQn98G5QgQVObfRg",
     }
   ).addTo(mymap);
-  mymap.options.minZoom = 14;
+  mymap.options.minZoom = 12;
   mymap.setMaxBounds(mymap.getBounds());
 }
 
