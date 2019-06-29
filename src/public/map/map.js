@@ -12,7 +12,14 @@ function buildMap(lat, lon, zoom) {
     }
   ).addTo(mymap);
   mymap.options.minZoom = 12;
-  mymap.setMaxBounds(mymap.getBounds());
+  console.log(mymap.getBounds());
+  const newBounds = mymap.getBounds();
+  newBounds._northEast.lat += 0.01;
+  newBounds._northEast.lng += 0.05;
+  newBounds._southWest.lat -= 0.01;
+  newBounds._southWest.lng -= 0.05;
+  console.log(newBounds);
+  mymap.setMaxBounds(newBounds);
 }
 
 function createHexGrid(bbox, cellsize) {
